@@ -1,34 +1,35 @@
 from textual.app import App, ComposeResult
+from textual.containers import Container
 from textual.screen import Screen
-from textual.widgets import Static
-
-ERROR_TEXT = """
-An error has occurred. To continue:
-
-Press Enter to return to Windows, or
-
-Press CTRL+ALT+DEL to restart your computer. If you do this,
-you will lose any unsaved information in all open applications.
-
-Error: 0E : 016F : BFF9B3D4
-"""
+from textual.widgets import Button, Header, Footer
 
 
-class BSOD(Screen):
-    BINDINGS = [("escape", "app.pop_screen", "Pop screen")]
-
+class MainScreen(Screen):
     def compose(self) -> ComposeResult:
-        yield Static(" Windows ", id="title")
-        yield Static(ERROR_TEXT)
-        yield Static("Press any key to continue [blink]_[/]", id="any-key")
+        yield Header()
+        yield Container(Button("Go to Second Screen", id="go_to_second"))
+        yield Footer()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "go_to_second":
+            self.app.push_screen(GameScreen())
 
 
-class BSODApp(App):
-    CSS_PATH = "style.tcss"
-    SCREENS = {"bsod": BSOD()}
-    BINDINGS = [("b", "push_screen('bsod')", "BSOD")]
+class GameScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Container(Button("Back to Main Screen", id="go_to_main"))
+        yield Footer()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "go_to_main":
+            self.app.pop_screen()
+
+
+class MinesweeperApp(App):
+    def on_mount(self) -> None:
+        self.push_screen(MainScreen())
 
 
 if __name__ == "__main__":
-    app = BSODApp()
-    app.run()
+    MinesweeperApp().run()
