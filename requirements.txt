@@ -1,1 +1,4 @@
-# Your requirements go here
+linkify-it-py==2.0.3
+mdit-py-plugins==0.4.1
+textual==0.76.0
+uc-micro-py==1.0.3
