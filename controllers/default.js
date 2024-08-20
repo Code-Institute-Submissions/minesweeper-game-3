@@ -17,11 +17,16 @@ function socket() {
 
         // Spawn terminal
         client.tty = Pty.spawn('python3', ['run.py'], {
-            name: 'xterm-color',
+            name: 'xterm-256color',
             cols: 80,
             rows: 24,
             cwd: process.env.PWD,
-            env: process.env
+            env: {
+                ...process.env,
+                TERM: 'xterm-256color',
+                LANG: 'en_US.UTF-8',
+                LC_ALL: 'en_US.UTF-8'
+            }
         });
 
         client.tty.on('exit', function (code, signal) {
