@@ -1,0 +1,8 @@
+.header {
+    align: center middle;
+    text-style: bold;
+    color: $background;
+    background: #ffc766;
+    height: 3;
+    width: 100%;
+}
