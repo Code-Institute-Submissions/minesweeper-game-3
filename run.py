@@ -40,8 +40,6 @@ class Selector(Static, can_focus=True):
         self.value = value
         self.on_change = on_change
         self.width = self.styles.width = width
-        # self.update_text()
-
 
     def on_mount(self):
         self.update_text()
@@ -66,12 +64,21 @@ class Selector(Static, can_focus=True):
             self.on_change(self.value)
 
 
+class MainScreen(Screen):    
+    def __init__(self):
+        super().__init__()
+        self.game_mode_selector = self.create_game_mode_selector()
+        self.play_button = self.create_play_button()
 
+    def create_game_mode_selector(self) -> Selector:
+        selector = Selector(options=['Easy', 'Medium', 'Hard'], classes='bordered')
+        selector.current_index = 0
+        return selector
 
-class MainScreen(Screen):
-    game_mode_selector = Selector(options=['Easy', 'Medium', 'Hard'], classes='bordered')
-    play_button = Button("Play", id="play_button", classes='bordered')
-    play_button.styles.width = 30
+    def create_play_button(self) -> Button:
+        button = Button("Play", id="play_button", classes='bordered')
+        button.styles.width = 30
+        return button
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
@@ -84,6 +91,7 @@ class MainScreen(Screen):
             classes='main_container'
         )
         yield Footer()
+
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "play_button":
