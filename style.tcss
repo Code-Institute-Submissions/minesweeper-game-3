@@ -7,6 +7,22 @@
     width: 100%;
 }
 
+Footer {
+    background: #ffc766;
+}
+
 .main_container {
     align: center middle;
+    border: round #ffc766;
+}
+
+.bordered {
+    border: round $surface;
+    color: #ffc766;
+    background: $surface;
+
+    &:focus {
+        text-style: bold;
+        border: round #ffc766;
+    }
 }
