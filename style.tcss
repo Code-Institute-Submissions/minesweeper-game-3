@@ -6,3 +6,7 @@
     height: 3;
     width: 100%;
 }
+
+.main_container {
+    align: center middle;
+}
