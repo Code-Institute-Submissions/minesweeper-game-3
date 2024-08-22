@@ -72,18 +72,34 @@ class MainScreen(Screen):
 
     def __init__(self):
         super().__init__()
+        self.theme_selector = self.create_theme_selector()
         self.color_selector = self.create_color_selector()
         self.game_mode_selector = self.create_game_mode_selector()
         self.play_button = self.create_play_button()
         self.main_container = Container(
+            self.theme_selector,
             self.color_selector,
             self.game_mode_selector,
             self.play_button,
             classes='main_container'
         )
 
+    def create_theme_selector(self) -> Selector:
+        selector = Selector(
+            options=['Dark', 'Light'],
+            classes='bordered',
+            on_change=lambda x: setattr(self.app, 'dark', x == 'Dark')
+        )
+        selector.current_index = 0
+        selector.border_title = 'Theme'
+        return selector
+
     def create_color_selector(self) -> Selector:
-        selector = Selector(options=['Red', 'Green', 'Blue'], classes='bordered')
+        selector = Selector(
+            options=['Red', 'Green', 'Blue'],
+            classes='bordered',
+            on_change=lambda x: setattr(self.main_container.styles, 'background', x.lower())
+        )
         selector.current_index = 0
         selector.border_title = 'Color'
         return selector

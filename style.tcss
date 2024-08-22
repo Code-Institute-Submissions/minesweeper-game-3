@@ -17,12 +17,14 @@ Footer {
 }
 
 .bordered {
-    border: round $surface;
+    border: round #ffc766;
+    border-title-align: center;
     color: #ffc766;
     background: $surface;
 
     &:focus {
         text-style: bold;
-        border: round #ffc766;
+        color: #3CA800;
+        border: heavy #3CA800;
     }
 }
