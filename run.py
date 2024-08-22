@@ -64,15 +64,34 @@ class Selector(Static, can_focus=True):
             self.on_change(self.value)
 
 
-class MainScreen(Screen):    
+class MainScreen(Screen):
+    BINDINGS = [
+        ('up', 'previous_widget'),
+        ('down', 'next_widget')
+    ]
+
     def __init__(self):
         super().__init__()
+        self.color_selector = self.create_color_selector()
         self.game_mode_selector = self.create_game_mode_selector()
         self.play_button = self.create_play_button()
+        self.main_container = Container(
+            self.color_selector,
+            self.game_mode_selector,
+            self.play_button,
+            classes='main_container'
+        )
+
+    def create_color_selector(self) -> Selector:
+        selector = Selector(options=['Red', 'Green', 'Blue'], classes='bordered')
+        selector.current_index = 0
+        selector.border_title = 'Color'
+        return selector
 
     def create_game_mode_selector(self) -> Selector:
         selector = Selector(options=['Easy', 'Medium', 'Hard'], classes='bordered')
         selector.current_index = 0
+        selector.border_title = 'Difficulty'
         return selector
 
     def create_play_button(self) -> Button:
@@ -81,22 +100,26 @@ class MainScreen(Screen):
         return button
 
     def compose(self) -> ComposeResult:
-        yield Horizontal(
-            Label('<------ Minesweeper Game ------>'),
-            classes='header'
-        )
-        yield Container(
-            self.game_mode_selector,
-            self.play_button,
-            classes='main_container'
-        )
+        yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
+        yield self.main_container
         yield Footer()
 
+    def get_focused_widget(self) -> int:
+        for index, widget in enumerate(self.main_container.children):
+            if widget.has_focus:
+                return index
+
+    def action_next_widget(self) -> None:
+        next_widget_index = (self.get_focused_widget() + 1) % len(self.main_container.children)
+        self.main_container.children[next_widget_index].focus()
+
+    def action_previous_widget(self) -> None:
+        next_widget_index = (self.get_focused_widget() - 1) % len(self.main_container.children)
+        self.main_container.children[next_widget_index].focus()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "play_button":
             self.app.push_screen(GameScreen())
-
 
 
 class GameScreen(Screen):
