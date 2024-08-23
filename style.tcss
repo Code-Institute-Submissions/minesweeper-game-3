@@ -2,29 +2,30 @@
     align: center middle;
     text-style: bold;
     color: $background;
-    background: #ffc766;
+    background: $primary;
     height: 3;
     width: 100%;
 }
 
 Footer {
-    background: #ffc766;
+    background: $primary;
 }
 
 .main_container {
     align: center middle;
-    border: round #ffc766;
+    border: round $primary;
+    background: $background;
 }
 
 .bordered {
-    border: round #ffc766;
+    border: round $primary;
     border-title-align: center;
-    color: #ffc766;
-    background: $surface;
+    color: $primary;
+    background: $background;
 
     &:focus {
         text-style: bold;
-        color: #3CA800;
-        border: heavy #3CA800;
+        color: $accent;
+        border: heavy $accent;
     }
 }

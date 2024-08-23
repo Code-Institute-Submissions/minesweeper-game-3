@@ -4,6 +4,8 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static, Footer
+from textual.color import Color
+from themes import Hue, DarkTheme, LightTheme
 
 
 class Selector(Static, can_focus=True):
@@ -24,17 +26,14 @@ class Selector(Static, can_focus=True):
 
     def __init__(
             self,
-            name: str | None = None,
-            id: str | None = None,
-            classes: str | None = None,
-            disabled: bool = False,
             options: List[str] | None = None,
             current_index: int = 0,
             value: str | None = None,
             on_change: Callable = None,
-            width: int = 30
+            width: int = 30,
+            **kwargs
     ):
-        super().__init__(name=name, id=id, classes=classes, disabled=disabled)
+        super().__init__(**kwargs)
         self.options = options
         self.current_index = current_index
         self.value = value
@@ -72,6 +71,7 @@ class MainScreen(Screen):
 
     def __init__(self):
         super().__init__()
+        self.set_color_theme('orange')
         self.theme_selector = self.create_theme_selector()
         self.color_selector = self.create_color_selector()
         self.game_mode_selector = self.create_game_mode_selector()
@@ -96,13 +96,36 @@ class MainScreen(Screen):
 
     def create_color_selector(self) -> Selector:
         selector = Selector(
-            options=['Red', 'Green', 'Blue'],
+            options=['Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Red'],
             classes='bordered',
-            on_change=lambda x: setattr(self.main_container.styles, 'background', x.lower())
+            on_change=lambda x: self.set_color_theme(x)
         )
         selector.current_index = 0
         selector.border_title = 'Color'
         return selector
+
+    def set_color_theme(self, color):
+        hue = Hue[color.upper()].value / 360
+        modes = {
+            'dark': {
+                'PRIMARY_BACKGROUND': DarkTheme.PRIMARY_BACKGROUND.value,
+                'SECONDARY_ACCENT': DarkTheme.SECONDARY_ACCENT.value,
+                'PRIMARY_ACCENT': DarkTheme.PRIMARY_ACCENT.value
+            },
+            'light': {
+                'PRIMARY_BACKGROUND': LightTheme.PRIMARY_BACKGROUND.value,
+                'SECONDARY_ACCENT': LightTheme.SECONDARY_ACCENT.value,
+                'PRIMARY_ACCENT': LightTheme.PRIMARY_ACCENT.value
+            }
+        }
+
+        for mode, theme in modes.items():
+            self.app.design[mode].primary = Color.from_hsl(hue, *theme['SECONDARY_ACCENT'])
+            self.app.design[mode].background = Color.from_hsl(hue, *theme['PRIMARY_BACKGROUND'])
+            self.app.design[mode].accent = Color.from_hsl(hue, *theme['PRIMARY_ACCENT'])
+
+        self.app.dark = not self.app.dark
+        self.app.dark = not self.app.dark
 
     def create_game_mode_selector(self) -> Selector:
         selector = Selector(options=['Easy', 'Medium', 'Hard'], classes='bordered')
