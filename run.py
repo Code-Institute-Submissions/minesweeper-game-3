@@ -181,12 +181,11 @@ class GameScreen(Screen):
         )
 
     def compose(self) -> ComposeResult:
-        yield Label()
-        yield Container(Button("Back to Main Screen", id="go_to_main"))
+        yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
+        yield Conteiner()
+        yield Footer()
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "go_to_main":
-            self.app.pop_screen()
+
 
 
 class MinesweeperApp(App):
