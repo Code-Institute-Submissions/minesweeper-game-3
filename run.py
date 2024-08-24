@@ -5,7 +5,7 @@ from textual.containers import Container, Horizontal
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static, Footer
 from textual.color import Color
-from themes import Hue, DarkTheme, LightTheme
+from configurations import Hue, DarkTheme, LightTheme, GameMode
 
 
 class Selector(Static, can_focus=True):
@@ -166,7 +166,8 @@ class MainScreen(Screen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "play_button":
-            self.app.push_screen()
+            game_mode = self.game_mode_selector.value
+            self.app.push_screen(GameScreen(game_mode))
 
 
 class GameScreen(Screen):

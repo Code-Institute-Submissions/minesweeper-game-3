@@ -25,3 +25,9 @@ class DarkTheme(Enum):
     PRIMARY_ACCENT = (1, 0.6)
     SECONDARY_ACCENT = (1, 0.8)
     FONT_COLOR = (0.95, 0.95)
+
+
+class GameMode(Enum):
+    EASY = {'mine': 10, 'grid_size': (11, 8)}
+    MEDIUM = {'mine': 25, 'grid_size': (19, 14)}
+    HARD = {'mine': 50, 'grid_size': (25, 16)}
