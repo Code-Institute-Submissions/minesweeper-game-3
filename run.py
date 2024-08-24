@@ -65,9 +65,19 @@ class Selector(Static, can_focus=True):
 
 
 class GameBoard(Grid):
-    def __init__(self, grid_size=(10, 10), **kwargs):
+    BINDINGS = [
+        ('space, f', 'toggle_flag'),
+    ]
+
+    def __init__(
+            self,
+            grid_size=(10, 10),
+            on_change: Callable = None,
+            **kwargs
+    ):
         super().__init__(**kwargs)
         self.grid_size = grid_size
+        self.on_change = on_change
         self.grid_width, self.grid_height = grid_size
         self.styles.grid_size_columns = self.grid_size[0]
         self.styles.grid_size_rows = self.grid_size[1]
@@ -90,7 +100,6 @@ class GameBoard(Grid):
         self.update_focus()
 
     def update_focus(self):
-        print(self.focused_button_index)
         button = self.get_child_by_id(f'id_{self.focused_button_index}')
         if button:
             button.focus()
@@ -108,12 +117,18 @@ class GameBoard(Grid):
         elif event.key in ('right', 'd'):
             if self.focused_button_index % self.grid_size[0] != self.grid_size[0] - 1:
                 self.focused_button_index += 1
-        elif event.key in ('space', 'f'):
-            button = self.children[self.focused_button_index]
-            button.label = '' if button.label else '\u2691'
-            # button.styles.color = 'green'
 
         self.update_focus()
+
+
+    def action_toggle_flag(self):
+        button = self.children[self.focused_button_index]
+        button.label = '' if button.label else '\u2691'
+        # button.styles.color = self.app.design['dark'].accent
+
+        if callable(self.on_change):
+            col, row = divmod(self.focused_button_index, self.grid_width)
+            self.on_change({'col': col, 'row': row, 'flag': bool(button.label)})
 
 
 class MainScreen(Screen):
@@ -230,9 +245,6 @@ class GameScreen(Screen):
         super().__init__(**kwargs)
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
-        self.main_container = Container(
-            Button("Back to Main Screen", id="go_to_main")
-        )
 
     def compose(self) -> ComposeResult:
         yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
