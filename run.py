@@ -1,7 +1,7 @@
 from typing import List, Callable
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, Grid
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static, Footer
 from textual.color import Color
@@ -62,6 +62,26 @@ class Selector(Static, can_focus=True):
         self.value = self.options[self.current_index]
         if callable(self.on_change):
             self.on_change(self.value)
+
+
+class GameBoard(Grid):
+    def __init__(self, grid_size=(10, 10), **kwargs):
+        super().__init__(**kwargs)
+        self.grid_size = grid_size
+        self.grid_width, self.grid_height = grid_size
+        self.styles.grid_size_columns = self.grid_size[0]
+        self.styles.grid_size_rows = self.grid_size[1]
+        self.styles.width = self.grid_width * 3 + 2
+        self.styles.height = self.grid_height + 2
+        self.focused_button_index = 0
+        self.build()
+
+    def build(self) -> None:
+        for i in range(self.grid_size[0] * self.grid_size[1]):
+            color_class = 'primary-bg' if i % 2 else 'secondary-bg'
+            self.compose_add_child(Button(' ', classes=f'game_button {color_class}', id=f'id_{i}'))
+
+
 
 
 class MainScreen(Screen):
@@ -185,7 +205,10 @@ class GameScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
-        yield Conteiner()
+        yield Container(
+            GameBoard(grid_size=self.grid_size),
+            classes='main_container'
+        )
         yield Footer()
 
     def action_quit_game(self):

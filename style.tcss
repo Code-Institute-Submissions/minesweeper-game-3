@@ -30,6 +30,27 @@ Footer {
     }
 }
 
+GameBoard {
+    border: inner $background;
+}
+
+.game_button {
+    color: green;
+    content-align: center middle;
+    width: 100%;
+ #   min-width: 2;
+#    min-height: 2;
+    height: 100%;
+    background: #2B2D30;
+    text-style: bold;
+    border: none;
+
+    &:focus,
+    &:hover {
+        background: $accent;
+    }
+}
+
 .primary-bg {
     background: $primary;
 }
@@ -42,3 +63,4 @@ Footer {
     background: $surface;
     border: none;
 }
+
