@@ -79,7 +79,7 @@ class GameBoard(Grid):
     def build(self) -> None:
         for i in range(self.grid_size[0] * self.grid_size[1]):
             color_class = 'primary-bg' if i % 2 else 'secondary-bg'
-            self.compose_add_child(Button(' ', classes=f'game_button {color_class}', id=f'id_{i}'))
+            self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         event.button.classes = 'surface-bg'
@@ -96,18 +96,22 @@ class GameBoard(Grid):
             button.focus()
 
     def on_key(self, event):
-        if event.key == "up":
+        if event.key in ('up', 'w'):
             if self.focused_button_index >= self.grid_size[0]:
                 self.focused_button_index -= self.grid_size[0]
-        elif event.key == "down":
+        elif event.key in ('down', 's'):
             if self.focused_button_index < (self.grid_size[0] * (self.grid_size[1] - 1)):
                 self.focused_button_index += self.grid_size[0]
-        elif event.key == "left":
+        elif event.key in ('left', 'a'):
             if self.focused_button_index % self.grid_size[0] != 0:
                 self.focused_button_index -= 1
-        elif event.key == "right":
+        elif event.key in ('right', 'd'):
             if self.focused_button_index % self.grid_size[0] != self.grid_size[0] - 1:
                 self.focused_button_index += 1
+        elif event.key in ('space', 'f'):
+            button = self.children[self.focused_button_index]
+            button.label = '' if button.label else '\u2691'
+            # button.styles.color = 'green'
 
         self.update_focus()
 
@@ -154,7 +158,6 @@ class MainScreen(Screen):
         return selector
 
     def set_color_theme(self, color):
-        print(self.app.design['dark'].__dict__)
         hue = Hue[color.upper()].value / 360
         modes = {
             'dark': {
