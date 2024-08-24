@@ -106,30 +106,37 @@ class MainScreen(Screen):
         return selector
 
     def set_color_theme(self, color):
+        print(self.app.design['dark'].__dict__)
         hue = Hue[color.upper()].value / 360
         modes = {
             'dark': {
                 'PRIMARY_BACKGROUND': DarkTheme.PRIMARY_BACKGROUND.value,
-                'SECONDARY_ACCENT': DarkTheme.SECONDARY_ACCENT.value,
-                'PRIMARY_ACCENT': DarkTheme.PRIMARY_ACCENT.value
+                'SECONDARY_BACKGROUND': DarkTheme.SECONDARY_BACKGROUND.value,
+                'PRIMARY_ACCENT': DarkTheme.PRIMARY_ACCENT.value,
+                'SECONDARY_ACCENT': DarkTheme.SECONDARY_ACCENT.value
             },
             'light': {
                 'PRIMARY_BACKGROUND': LightTheme.PRIMARY_BACKGROUND.value,
-                'SECONDARY_ACCENT': LightTheme.SECONDARY_ACCENT.value,
-                'PRIMARY_ACCENT': LightTheme.PRIMARY_ACCENT.value
+                'SECONDARY_BACKGROUND': LightTheme.SECONDARY_BACKGROUND.value,
+                'PRIMARY_ACCENT': LightTheme.PRIMARY_ACCENT.value,
+                'SECONDARY_ACCENT': LightTheme.SECONDARY_ACCENT.value
             }
         }
 
         for mode, theme in modes.items():
-            self.app.design[mode].primary = Color.from_hsl(hue, *theme['SECONDARY_ACCENT'])
-            self.app.design[mode].background = Color.from_hsl(hue, *theme['PRIMARY_BACKGROUND'])
+            self.app.design[mode].primary = Color.from_hsl(hue, *theme['PRIMARY_BACKGROUND'])
+            self.app.design[mode].secondary = Color.from_hsl(hue, *theme['SECONDARY_BACKGROUND'])
+            self.app.design[mode].background = Color.from_hsl(hue, *theme['SECONDARY_ACCENT'])
             self.app.design[mode].accent = Color.from_hsl(hue, *theme['PRIMARY_ACCENT'])
 
         self.app.dark = not self.app.dark
         self.app.dark = not self.app.dark
 
     def create_game_mode_selector(self) -> Selector:
-        selector = Selector(options=['Easy', 'Medium', 'Hard'], classes='bordered')
+        selector = Selector(
+            options=['Easy', 'Medium', 'Hard'],
+            classes='bordered'
+        )
         selector.current_index = 0
         selector.border_title = 'Difficulty'
         return selector
@@ -159,7 +166,7 @@ class MainScreen(Screen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "play_button":
-            self.app.push_screen(GameScreen())
+            self.app.push_screen()
 
 
 class GameScreen(Screen):
