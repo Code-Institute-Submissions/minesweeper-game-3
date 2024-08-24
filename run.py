@@ -171,6 +171,9 @@ class MainScreen(Screen):
 
 
 class GameScreen(Screen):
+    BINDINGS = [
+        ('q', 'quit_game')
+    ]
 
     def __init__(self, game_mode, **kwargs):
         super().__init__(**kwargs)
@@ -185,7 +188,8 @@ class GameScreen(Screen):
         yield Conteiner()
         yield Footer()
 
-
+    def action_quit_game(self):
+        self.app.pop_screen()
 
 
 class MinesweeperApp(App):
