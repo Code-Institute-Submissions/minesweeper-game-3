@@ -81,7 +81,19 @@ class GameBoard(Grid):
             color_class = 'primary-bg' if i % 2 else 'secondary-bg'
             self.compose_add_child(Button(' ', classes=f'game_button {color_class}', id=f'id_{i}'))
 
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        event.button.classes = 'surface-bg'
+        event.button.label = '1'
 
+    def on_mount(self):
+        self.focused_button_index = 0
+        self.update_focus()
+
+    def update_focus(self):
+        print(self.focused_button_index)
+        button = self.get_child_by_id(f'id_{self.focused_button_index}')
+        if button:
+            button.focus()
 
     def on_key(self, event):
         if event.key == "up":
