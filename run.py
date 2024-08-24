@@ -42,6 +42,7 @@ class Selector(Static, can_focus=True):
 
     def on_mount(self):
         self.update_text()
+        self.value = self.options[self.current_index]
 
     def action_next_option(self):
         self.current_index = (self.current_index + 1) % len(self.options)
