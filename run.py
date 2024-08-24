@@ -83,6 +83,22 @@ class GameBoard(Grid):
 
 
 
+    def on_key(self, event):
+        if event.key == "up":
+            if self.focused_button_index >= self.grid_size[0]:
+                self.focused_button_index -= self.grid_size[0]
+        elif event.key == "down":
+            if self.focused_button_index < (self.grid_size[0] * (self.grid_size[1] - 1)):
+                self.focused_button_index += self.grid_size[0]
+        elif event.key == "left":
+            if self.focused_button_index % self.grid_size[0] != 0:
+                self.focused_button_index -= 1
+        elif event.key == "right":
+            if self.focused_button_index % self.grid_size[0] != self.grid_size[0] - 1:
+                self.focused_button_index += 1
+
+        self.update_focus()
+
 
 class MainScreen(Screen):
     BINDINGS = [
