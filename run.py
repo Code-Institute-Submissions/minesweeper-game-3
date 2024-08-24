@@ -171,6 +171,15 @@ class MainScreen(Screen):
 
 
 class GameScreen(Screen):
+
+    def __init__(self, game_mode, **kwargs):
+        super().__init__(**kwargs)
+        self.game_mode = GameMode[game_mode.upper()].value
+        self.grid_size = self.game_mode['grid_size']
+        self.main_container = Container(
+            Button("Back to Main Screen", id="go_to_main")
+        )
+
     def compose(self) -> ComposeResult:
         yield Label()
         yield Container(Button("Back to Main Screen", id="go_to_main"))
