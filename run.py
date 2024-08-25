@@ -6,6 +6,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Label, Static, Footer
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode
+import numpy as np
 
 
 class Selector(Static, can_focus=True):
@@ -139,6 +140,13 @@ class Game:
     ):
         self.size = size
         self.mine = mine
+        self.build()
+
+
+    def build(self):
+        game_grid = np.zeros(np.flip(self.size), dtype=int)
+
+        random_positions = [divmod(int(i), 10) for i in np.random.choice(game_grid.size, 2, replace=False)]
 
 
 class MainScreen(Screen):
