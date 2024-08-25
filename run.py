@@ -5,7 +5,7 @@ from textual.containers import Container, Horizontal, Grid
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static, Footer
 from textual.color import Color
-from configurations import Hue, DarkTheme, LightTheme, GameMode
+from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
 import numpy as np
 
 
@@ -73,22 +73,21 @@ class GameBoard(Grid):
     def __init__(
             self,
             grid_size=(10, 10),
-            on_change: Callable = None,
+            number_of_mine=10,
             **kwargs
     ):
         super().__init__(**kwargs)
-        self.grid_size = grid_size
-        self.on_change = on_change
+        self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
-        self.styles.grid_size_columns = self.grid_size[0]
-        self.styles.grid_size_rows = self.grid_size[1]
+        self.styles.grid_size_columns = self.grid_width
+        self.styles.grid_size_rows = self.grid_height
         self.styles.width = self.grid_width * 3 + 2
         self.styles.height = self.grid_height + 2
         self.focused_button_index = 0
         self.build()
 
     def build(self) -> None:
-        for i in range(self.grid_size[0] * self.grid_size[1]):
+        for i in range(self.grid_width * self.grid_height):
             color_class = 'primary-bg' if i % 2 else 'secondary-bg'
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
@@ -107,46 +106,70 @@ class GameBoard(Grid):
 
     def on_key(self, event):
         if event.key in ('up', 'w'):
-            if self.focused_button_index >= self.grid_size[0]:
-                self.focused_button_index -= self.grid_size[0]
+            if self.focused_button_index >= self.grid_width:
+                self.focused_button_index -= self.grid_width
         elif event.key in ('down', 's'):
-            if self.focused_button_index < (self.grid_size[0] * (self.grid_size[1] - 1)):
-                self.focused_button_index += self.grid_size[0]
+            if self.focused_button_index < (self.grid_width * (self.grid_height - 1)):
+                self.focused_button_index += self.grid_width
         elif event.key in ('left', 'a'):
-            if self.focused_button_index % self.grid_size[0] != 0:
+            if self.focused_button_index % self.grid_width != 0:
                 self.focused_button_index -= 1
         elif event.key in ('right', 'd'):
-            if self.focused_button_index % self.grid_size[0] != self.grid_size[0] - 1:
+            if self.focused_button_index % self.grid_width != self.grid_height - 1:
                 self.focused_button_index += 1
 
         self.update_focus()
 
-
     def action_toggle_flag(self):
         button = self.children[self.focused_button_index]
-        button.label = '' if button.label else '\u2691'
-        # button.styles.color = self.app.design['dark'].accent
-
-        if callable(self.on_change):
-            col, row = divmod(self.focused_button_index, self.grid_width)
-            self.on_change({'col': col, 'row': row, 'flag': bool(button.label)})
+        button.label = '\u2691' if not button.label else ''
 
 
 class Game:
     def __init__(
             self,
-            size=None,
-            mine: int = 10
+            cols=10,
+            rows=10,
+            number_of_mines=10
     ):
-        self.size = size
-        self.mine = mine
-        self.build()
+        self.cols = cols
+        self.rows = rows
+        self.number_of_mines = number_of_mines
+        self.game_matrix = np.zeros((self.rows, self.cols), dtype=np.uint8)
+        self.mask = self.create_mask()
+        self.initialize_mines()
 
+    def initialize_mines(self):
+        matrix = self.game_matrix.copy()
+        random_mines = np.random.choice(self.game_matrix.size, self.number_of_mines, replace=False)
 
-    def build(self):
-        game_grid = np.zeros(np.flip(self.size), dtype=int)
+        for mine in random_mines:
+            mask = self.mask.copy()
+            pos_y, pos_x = divmod(mine, self.cols)
+            pos_y, pos_x = pos_y - 1, pos_x - 1
 
-        random_positions = [divmod(int(i), 10) for i in np.random.choice(game_grid.size, 2, replace=False)]
+            if pos_x < 0:
+                mask = mask[:, 1:]
+                pos_x = 0
+            elif pos_x > self.cols - 3:
+                mask = mask[:, :-1]
+
+            if pos_y < 0:
+                mask = mask[1:, :]
+                pos_y = 0
+            elif pos_y > self.rows - 3:
+                mask = mask[:-1, :]
+
+            new_matrix = self.game_matrix.copy()
+            new_matrix[pos_y:pos_y + mask.shape[0], pos_x:pos_x + mask.shape[1]] = mask
+            matrix += new_matrix
+
+        self.game_matrix = matrix
+
+    def create_mask(self):
+        mask = np.ones((3, 3), dtype=int)
+        mask[1, 1] = 9
+        return mask
 
 
 class MainScreen(Screen):
@@ -263,12 +286,13 @@ class GameScreen(Screen):
         super().__init__(**kwargs)
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
-        self.game = Game(self.grid_size, self.game_mode['mine'])
+        self.mine = self.game_mode['mine']
+        self.game_board = GameBoard(grid_size=self.grid_size, number_of_mine=self.mine)
 
     def compose(self) -> ComposeResult:
         yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
         yield Container(
-            GameBoard(grid_size=self.grid_size),
+            self.game_board,
             classes='main_container'
         )
         yield Footer()
