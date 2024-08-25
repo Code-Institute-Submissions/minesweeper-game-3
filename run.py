@@ -131,6 +131,16 @@ class GameBoard(Grid):
             self.on_change({'col': col, 'row': row, 'flag': bool(button.label)})
 
 
+class Game:
+    def __init__(
+            self,
+            size=None,
+            mine: int = 10
+    ):
+        self.size = size
+        self.mine = mine
+
+
 class MainScreen(Screen):
     BINDINGS = [
         ('up', 'previous_widget'),
@@ -245,6 +255,7 @@ class GameScreen(Screen):
         super().__init__(**kwargs)
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
+        self.game = Game(self.grid_size, self.game_mode['mine'])
 
     def compose(self) -> ComposeResult:
         yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
