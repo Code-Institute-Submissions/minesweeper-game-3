@@ -79,6 +79,8 @@ class GameBoard(Grid):
         super().__init__(**kwargs)
         self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
+        self.game = Game(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
+        self.game_matrix = self.game.game_matrix
         self.styles.grid_size_columns = self.grid_width
         self.styles.grid_size_rows = self.grid_height
         self.styles.width = self.grid_width * 3 + 2
@@ -92,8 +94,19 @@ class GameBoard(Grid):
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        event.button.classes = 'surface-bg'
-        event.button.label = '1'
+        if value := self.game_matrix.flatten()[self.focused_button_index]:
+            color_classes = {3: 'board-red', 2: 'board-green', 1: 'board-blue'}
+            if value >= 9:
+                event.button.label = Icons.MINE.value
+                event.button.classes = f'surface-bg {color_classes[3]}'
+            else:
+                print(value)
+                event.button.label = f'{value}'
+                event.button.classes = f'surface-bg {color_classes[value]}'
+
+        else:
+            event.button.label = ' '
+            event.button.classes = 'surface-bg'
 
     def on_mount(self):
         self.focused_button_index = 0
@@ -115,7 +128,7 @@ class GameBoard(Grid):
             if self.focused_button_index % self.grid_width != 0:
                 self.focused_button_index -= 1
         elif event.key in ('right', 'd'):
-            if self.focused_button_index % self.grid_width != self.grid_height - 1:
+            if self.focused_button_index % self.grid_width != self.grid_width - 1:
                 self.focused_button_index += 1
 
         self.update_focus()

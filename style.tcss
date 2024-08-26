@@ -30,6 +30,10 @@ Footer {
     }
 }
 
+
+
+
+
 GameBoard {
     border: inner $background;
 }
@@ -38,8 +42,6 @@ GameBoard {
     color: green;
     content-align: center middle;
     width: 100%;
- #   min-width: 2;
-#    min-height: 2;
     height: 100%;
     background: #2B2D30;
     text-style: bold;
@@ -63,4 +65,17 @@ GameBoard {
     background: $surface;
     border: none;
 }
+
+.board-red {
+    color: red;
+}
+
+.board-green {
+    color: green;
+}
+
+.board-blue {
+    color: blue;
+}
+
 
