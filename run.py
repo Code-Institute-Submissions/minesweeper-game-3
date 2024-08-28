@@ -67,7 +67,7 @@ class Selector(Static, can_focus=True):
 
 class GameBoard(Grid):
     BINDINGS = [
-        ('space, f', 'toggle_flag'),
+        ('space, f', 'toggle_flag')
     ]
 
     def __init__(
@@ -94,13 +94,15 @@ class GameBoard(Grid):
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if value := self.game_matrix.flatten()[self.focused_button_index]:
-            color_classes = {3: 'board-red', 2: 'board-green', 1: 'board-blue'}
+        if value := int(self.game_matrix.flatten()[self.focused_button_index]):
+            color_classes = {2: 'board-green', 1: 'board-blue'}
             if value >= 9:
                 event.button.label = Icons.MINE.value
-                event.button.classes = f'surface-bg {color_classes[3]}'
+                event.button.classes = f'surface-bg board-red'
+            elif value >= 3:
+                event.button.label = f'{value}'
+                event.button.classes = 'surface-bg board-red'
             else:
-                print(value)
                 event.button.label = f'{value}'
                 event.button.classes = f'surface-bg {color_classes[value]}'
 
