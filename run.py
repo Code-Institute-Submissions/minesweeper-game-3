@@ -108,8 +108,9 @@ class GameBoard(Grid):
                 event.button.classes = f'surface-bg {color_classes[value]}'
 
         else:
-            event.button.label = ' '
-            event.button.classes = 'surface-bg'
+            self.uncover_connected_zeros()
+            # event.button.label = ' '
+            # event.button.classes = 'surface-bg'
 
     def on_mount(self):
         self.focused_button_index = 0
@@ -139,6 +140,16 @@ class GameBoard(Grid):
     def action_toggle_flag(self):
         button = self.children[self.focused_button_index]
         button.label = '\u2691' if not button.label else ''
+
+    def uncover_connected_zeros(self):
+        position = divmod(self.focused_button_index, self.grid_width)
+        positions = self.game.get_connected_component(position)
+
+        for pos in positions:
+            button_index = pos[0] * self.grid_width + pos[1]
+            button = self.children[button_index]
+            button.label = ' '
+            button.classes = 'surface-bg'
 
 
 class Game:
