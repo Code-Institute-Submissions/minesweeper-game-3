@@ -7,6 +7,7 @@ from textual.widgets import Button, Label, Static, Footer
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
 import numpy as np
+from scipy.ndimage import label
 
 
 class Selector(Static, can_focus=True):
