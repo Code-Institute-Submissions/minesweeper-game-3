@@ -109,8 +109,6 @@ class GameBoard(Grid):
 
         else:
             self.uncover_connected_zeros()
-            # event.button.label = ' '
-            # event.button.classes = 'surface-bg'
 
     def on_mount(self):
         self.focused_button_index = 0
@@ -144,12 +142,20 @@ class GameBoard(Grid):
     def uncover_connected_zeros(self):
         position = divmod(self.focused_button_index, self.grid_width)
         positions = self.game.get_connected_component(position)
+        # test it
+        self.game.get_connected_component_with_frame(position)
 
         for pos in positions:
             button_index = pos[0] * self.grid_width + pos[1]
             button = self.children[button_index]
             button.label = ' '
             button.classes = 'surface-bg'
+
+    def uncover_all(self):
+        pass
+
+
+
 
 
 class Game:
@@ -196,7 +202,20 @@ class Game:
         self.game_matrix = matrix
 
     def get_connected_component(self, position):
-        return np.array(np.where(self.labeled_components == self.labeled_components[*position])).T
+        return np.argwhere(self.labeled_components == self.labeled_components[position])
+
+    def get_connected_component_with_frame(self, position):
+        zeros = np.zeros_like(self.game_matrix, dtype=np.uint8)
+        component = self.get_connected_component(position)
+
+        for position in component:
+            pos_start = np.clip(position - 1, 0, [self.rows - 1, self.cols - 1])
+            pos_end = np.clip(position + 1, 0, [self.rows - 1, self.cols - 1])
+
+            zeros[pos_start[0]:pos_end[0] + 1, pos_start[1]:pos_end[1] + 1] = 1
+
+        print(zeros)
+        return np.argwhere(zeros)
 
 
 class MainScreen(Screen):
