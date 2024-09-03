@@ -151,8 +151,9 @@ class Game:
         self.rows = rows
         self.number_of_mines = number_of_mines
         self.game_matrix = np.zeros((self.rows, self.cols), dtype=np.uint8)
-        self.mask = self.create_mask()
+        self.mask = np.ones((3, 3), dtype=int)
         self.initialize_mines()
+        self.labeled_components = label(self.game_matrix == 0, structure=self.mask)[0]
 
     def initialize_mines(self):
         matrix = self.game_matrix.copy()
@@ -160,6 +161,7 @@ class Game:
 
         for mine in random_mines:
             mask = self.mask.copy()
+            mask[1, 1] = 9
             pos_y, pos_x = divmod(mine, self.cols)
             pos_y, pos_x = pos_y - 1, pos_x - 1
 
@@ -181,10 +183,8 @@ class Game:
 
         self.game_matrix = matrix
 
-    def create_mask(self):
-        mask = np.ones((3, 3), dtype=int)
-        mask[1, 1] = 9
-        return mask
+    def get_connected_component(self, position):
+        return np.array(np.where(self.labeled_components == self.labeled_components[*position])).T
 
 
 class MainScreen(Screen):
