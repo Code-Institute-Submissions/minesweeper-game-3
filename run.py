@@ -14,8 +14,8 @@ from scipy.ndimage import label
 
 class Selector(Static, can_focus=True):
     BINDINGS = [
-        ('left', 'previous_option'),
-        ('right', 'next_option')
+        ('left, a', 'previous_option'),
+        ('right, d', 'next_option')
     ]
 
     DEFAULT_CSS = """
@@ -239,8 +239,8 @@ class Game:
 
 class MainScreen(Screen):
     BINDINGS = [
-        ('up', 'previous_widget'),
-        ('down', 'next_widget')
+        ('up, w', 'previous_widget'),
+        ('down, s', 'next_widget')
     ]
 
     def __init__(self):
