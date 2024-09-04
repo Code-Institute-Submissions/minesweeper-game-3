@@ -1,5 +1,6 @@
 from typing import List, Callable
 
+from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Grid
 from textual.screen import Screen
@@ -73,8 +74,8 @@ class GameBoard(Grid):
 
     def __init__(
             self,
-            grid_size=(10, 10),
-            number_of_mine=10,
+            grid_size: tuple | None = (10, 10),
+            number_of_mine: int | None = 10,
             **kwargs
     ):
         super().__init__(**kwargs)
@@ -108,12 +109,12 @@ class GameBoard(Grid):
         self.focused_button_index = 0
         self.update_focus()
 
-    def update_focus(self):
+    def update_focus(self) -> None:
         button = self.get_child_by_id(f'id_{self.focused_button_index}')
         if button:
             button.focus()
 
-    def on_key(self, event):
+    def on_key(self, event: events.Key) -> None:
         if event.key in ('up', 'w'):
             if self.focused_button_index >= self.grid_width:
                 self.focused_button_index -= self.grid_width
@@ -129,55 +130,43 @@ class GameBoard(Grid):
 
         self.update_focus()
 
-    def action_toggle_flag(self):
+    def action_toggle_flag(self) -> None:
         button = self.children[self.focused_button_index]
         button.label = '\u2691' if not button.label else ''
 
-    def uncover_connected_zeros(self):
+    def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
         positions = self.game.get_connected_component_with_frame(position)
 
         for pos in positions:
-            button_index = self.position_to_index(pos)
-            self.set_button(button_index)
+            self.set_button(self.position_to_index(pos))
 
-    def position_to_index(self, position):
+    def position_to_index(self, position: list | tuple) -> int:
         return position[0] * self.grid_width + position[1]
 
-    def index_to_position(self, index):
+    def index_to_position(self, index: int) -> tuple:
         return divmod(index, self.grid_width)
 
-    def uncover_all(self):
+    def uncover_all(self) -> None:
         for button_index in range(len(self.children)):
             self.set_button(button_index)
 
-    def get_value_by_index(self, index) -> int:
+    def get_value_by_index(self, index: int) -> int:
         return int(self.flat_game_matrix[index])
 
-    def get_value_by_position(self, position) -> int:
-        return int(self.game_matrix[position])
-
-    def get_value(self, position):
-        return self.game_matrix[position]
-
-    def set_button(self, button_index: int):
+    def set_button(self, button_index: int) -> None:
         button = self.children[button_index]
         value = self.get_value_by_index(button_index)
         if value >= 9:
-            button.label = Icons.MINE.value
-            button.classes = f'surface-bg board-red'
+            button.label, button.classes = Icons.MINE.value, f'surface-bg board-red'
         elif value >= 3:
-            button.label = str(value)
-            button.classes = 'surface-bg board-red'
+            button.label, button.classes = str(value), 'surface-bg board-red'
         elif value == 2:
-            button.label = str(value)
-            button.classes = 'surface-bg board-green'
+            button.label, button.classes = str(value), 'surface-bg board-green'
         elif value == 1:
-            button.label = str(value)
-            button.classes = 'surface-bg board-blue'
+            button.label, button.classes = str(value), 'surface-bg board-blue'
         else:
-            button.label = ' '
-            button.classes = 'surface-bg'
+            button.label, button.classes = ' ', 'surface-bg'
 
 
 class Game:
@@ -236,7 +225,6 @@ class Game:
 
             zeros[pos_start[0]:pos_end[0] + 1, pos_start[1]:pos_end[1] + 1] = 1
 
-        print(zeros)
         return np.argwhere(zeros)
 
 
