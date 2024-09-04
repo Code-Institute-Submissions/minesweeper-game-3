@@ -82,6 +82,7 @@ class GameBoard(Grid):
         self.grid_width, self.grid_height = grid_size
         self.game = Game(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
         self.game_matrix = self.game.game_matrix
+        self.flat_game_matrix = self.game_matrix.flatten()
         self.styles.grid_size_columns = self.grid_width
         self.styles.grid_size_rows = self.grid_height
         self.styles.width = self.grid_width * 3 + 2
@@ -95,18 +96,11 @@ class GameBoard(Grid):
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if value := int(self.game_matrix.flatten()[self.focused_button_index]):
-            color_classes = {2: 'board-green', 1: 'board-blue'}
+        if value := self.get_value_by_index(self.focused_button_index):
             if value >= 9:
-                event.button.label = Icons.MINE.value
-                event.button.classes = f'surface-bg board-red'
-            elif value >= 3:
-                event.button.label = f'{value}'
-                event.button.classes = 'surface-bg board-red'
+                self.uncover_all()
             else:
-                event.button.label = f'{value}'
-                event.button.classes = f'surface-bg {color_classes[value]}'
-
+                self.set_button(self.focused_button_index)
         else:
             self.uncover_connected_zeros()
 
@@ -140,22 +134,50 @@ class GameBoard(Grid):
         button.label = '\u2691' if not button.label else ''
 
     def uncover_connected_zeros(self):
-        position = divmod(self.focused_button_index, self.grid_width)
-        positions = self.game.get_connected_component(position)
-        # test it
-        self.game.get_connected_component_with_frame(position)
+        position = self.index_to_position(self.focused_button_index)
+        positions = self.game.get_connected_component_with_frame(position)
 
         for pos in positions:
-            button_index = pos[0] * self.grid_width + pos[1]
-            button = self.children[button_index]
-            button.label = ' '
-            button.classes = 'surface-bg'
+            button_index = self.position_to_index(pos)
+            self.set_button(button_index)
+
+    def position_to_index(self, position):
+        return position[0] * self.grid_width + position[1]
+
+    def index_to_position(self, index):
+        return divmod(index, self.grid_width)
 
     def uncover_all(self):
-        pass
+        for button_index in range(len(self.children)):
+            self.set_button(button_index)
 
+    def get_value_by_index(self, index) -> int:
+        return int(self.flat_game_matrix[index])
 
+    def get_value_by_position(self, position) -> int:
+        return int(self.game_matrix[position])
 
+    def get_value(self, position):
+        return self.game_matrix[position]
+
+    def set_button(self, button_index: int):
+        button = self.children[button_index]
+        value = self.get_value_by_index(button_index)
+        if value >= 9:
+            button.label = Icons.MINE.value
+            button.classes = f'surface-bg board-red'
+        elif value >= 3:
+            button.label = str(value)
+            button.classes = 'surface-bg board-red'
+        elif value == 2:
+            button.label = str(value)
+            button.classes = 'surface-bg board-green'
+        elif value == 1:
+            button.label = str(value)
+            button.classes = 'surface-bg board-blue'
+        else:
+            button.label = ' '
+            button.classes = 'surface-bg'
 
 
 class Game:
