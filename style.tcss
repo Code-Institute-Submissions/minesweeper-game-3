@@ -7,6 +7,16 @@
     width: 100%;
 }
 
+.title {
+    align: center middle;
+    width: 44;
+}
+
+.digits {
+    width: 15;
+    color: $primary;
+}
+
 Footer {
     background: $background;
 }
@@ -29,7 +39,6 @@ Footer {
         border: heavy $accent;
     }
 }
-
 
 
 
