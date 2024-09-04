@@ -1,4 +1,5 @@
 from typing import List, Callable
+import time
 
 from textual import events
 from textual.app import App, ComposeResult
@@ -76,9 +77,11 @@ class GameBoard(Grid):
             self,
             grid_size: tuple | None = (10, 10),
             number_of_mine: int | None = 10,
+            is_playing: bool = False,
             **kwargs
     ):
         super().__init__(**kwargs)
+        self.is_playing = is_playing
         self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
         self.game = Game(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
@@ -97,16 +100,22 @@ class GameBoard(Grid):
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        print(self.is_playing)
+        if not self.is_playing and not event.button.has_class('surface-bg'):
+            self.is_playing = True
+
+        print(self.is_playing)
+
         if value := self.get_value_by_index(self.focused_button_index):
             if value >= 9:
                 self.uncover_all()
+                self.is_playing = False
             else:
                 self.set_button(self.focused_button_index)
         else:
             self.uncover_connected_zeros()
 
     def on_mount(self):
-        self.focused_button_index = 0
         self.update_focus()
 
     def update_focus(self) -> None:
@@ -182,7 +191,7 @@ class Game:
         self.game_matrix = np.zeros((self.rows, self.cols), dtype=np.uint8)
         self.mask = np.ones((3, 3), dtype=int)
         self.initialize_mines()
-        self.labeled_components = label(self.game_matrix == 0, structure=self.mask)[0]
+        self.labeled_components: np.ndarray = label(self.game_matrix == 0, structure=self.mask)[0]
 
     def initialize_mines(self) -> None:
         matrix = self.game_matrix.copy()
@@ -344,6 +353,7 @@ class GameScreen(Screen):
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
         self.game_board = GameBoard(grid_size=self.grid_size, number_of_mine=self.mine)
+        self.start_time = None
         self.counter = Digits('99', classes='digits')
         self.timer = Digits('00:00', classes='digits')
 
@@ -359,6 +369,23 @@ class GameScreen(Screen):
             classes='main_container'
         )
         yield Footer()
+
+    def on_key(self, event: events.Key) -> None:
+        if event.key == 'enter' and not self.game_board.is_playing:
+            print('start timer...')
+            self.start_timer()
+
+    def start_timer(self) -> None:
+        self.start_time = time.time()
+        self.update_timer()
+        self.set_interval(1, self.update_timer)
+
+    def update_timer(self) -> None:
+        if self.game_board.is_playing:
+            elapsed_time = time.time() - self.start_time
+            minutes, seconds = divmod(int(elapsed_time), 60)
+            colon = ':' if seconds % 2 else ' '
+            self.timer.update(f'{minutes:02}{colon}{seconds:02}')
 
     def action_quit_game(self) -> None:
         self.app.pop_screen()
