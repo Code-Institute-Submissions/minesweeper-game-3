@@ -43,25 +43,25 @@ class Selector(Static, can_focus=True):
         self.on_change = on_change
         self.width = self.styles.width = width
 
-    def on_mount(self):
+    def on_mount(self) -> None:
         self.update_text()
         self.value = self.options[self.current_index]
 
-    def action_next_option(self):
+    def action_next_option(self) -> None:
         self.current_index = (self.current_index + 1) % len(self.options)
         self.update_text()
         self.update_value()
 
-    def action_previous_option(self):
+    def action_previous_option(self) -> None:
         self.current_index = (self.current_index - 1) % len(self.options)
         self.update_text()
         self.update_value()
 
-    def update_text(self):
+    def update_text(self) -> None:
         text_area_width = self.width - 6 if self.styles.border else self.width - 4
         self.update(f' \u2B9C{self.options[self.current_index].center(text_area_width)}\u2B9E ')
 
-    def update_value(self):
+    def update_value(self) -> None:
         self.value = self.options[self.current_index]
         if callable(self.on_change):
             self.on_change(self.value)
@@ -172,9 +172,9 @@ class GameBoard(Grid):
 class Game:
     def __init__(
             self,
-            cols=10,
-            rows=10,
-            number_of_mines=10
+            cols: int = 10,
+            rows: int = 10,
+            number_of_mines: int = 10
     ):
         self.cols = cols
         self.rows = rows
@@ -184,7 +184,7 @@ class Game:
         self.initialize_mines()
         self.labeled_components = label(self.game_matrix == 0, structure=self.mask)[0]
 
-    def initialize_mines(self):
+    def initialize_mines(self) -> None:
         matrix = self.game_matrix.copy()
         random_mines = np.random.choice(self.game_matrix.size, self.number_of_mines, replace=False)
 
@@ -212,10 +212,10 @@ class Game:
 
         self.game_matrix = matrix
 
-    def get_connected_component(self, position):
+    def get_connected_component(self, position: list | tuple) -> np.ndarray:
         return np.argwhere(self.labeled_components == self.labeled_components[position])
 
-    def get_connected_component_with_frame(self, position):
+    def get_connected_component_with_frame(self, position: list | tuple) -> np.ndarray:
         zeros = np.zeros_like(self.game_matrix, dtype=np.uint8)
         component = self.get_connected_component(position)
 
@@ -269,7 +269,7 @@ class MainScreen(Screen):
         selector.border_title = 'Color'
         return selector
 
-    def set_color_theme(self, color):
+    def set_color_theme(self, color: str) -> None:
         hue = Hue[color.upper()].value / 360
         modes = {
             'dark': {
@@ -353,7 +353,7 @@ class GameScreen(Screen):
         )
         yield Footer()
 
-    def action_quit_game(self):
+    def action_quit_game(self) -> None:
         self.app.pop_screen()
 
 
