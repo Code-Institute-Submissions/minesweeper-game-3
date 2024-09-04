@@ -4,7 +4,7 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Grid
 from textual.screen import Screen
-from textual.widgets import Button, Label, Static, Footer
+from textual.widgets import Button, Label, Static, Footer, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
 import numpy as np
@@ -344,9 +344,16 @@ class GameScreen(Screen):
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
         self.game_board = GameBoard(grid_size=self.grid_size, number_of_mine=self.mine)
+        self.counter = Digits('99', classes='digits')
+        self.timer = Digits('00:00', classes='digits')
 
     def compose(self) -> ComposeResult:
-        yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
+        yield Horizontal(
+            self.counter,
+            Container(Label('Minesweeper Game'), classes='title'),
+            self.timer,
+            classes='header'
+        )
         yield Container(
             self.game_board,
             classes='main_container'
