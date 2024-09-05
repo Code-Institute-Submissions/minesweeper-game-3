@@ -43,7 +43,7 @@ Footer {
 
 
 
-GameBoard {
+MinefieldUI {
     border: inner $background;
 }
 

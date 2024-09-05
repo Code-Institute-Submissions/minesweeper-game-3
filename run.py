@@ -68,7 +68,7 @@ class Selector(Static, can_focus=True):
             self.on_change(self.value)
 
 
-class GameBoard(Grid):
+class MinefieldUI(Grid):
     BINDINGS = [
         ('space, f', 'toggle_flag')
     ]
@@ -84,7 +84,7 @@ class GameBoard(Grid):
         self.is_playing = is_playing
         self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
-        self.game = Game(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
+        self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
         self.game_matrix = self.game.game_matrix
         self.flat_game_matrix = self.game_matrix.flatten()
         self.styles.grid_size_columns = self.grid_width
@@ -178,7 +178,7 @@ class GameBoard(Grid):
             button.label, button.classes = ' ', 'surface-bg'
 
 
-class Game:
+class MinefieldLogic:
     def __init__(
             self,
             cols: int = 10,
@@ -352,7 +352,7 @@ class GameScreen(Screen):
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
-        self.game_board = GameBoard(grid_size=self.grid_size, number_of_mine=self.mine)
+        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine)
         self.start_time = None
         self.counter = Digits('99', classes='digits')
         self.timer = Digits('00:00', classes='digits')
