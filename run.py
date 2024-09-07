@@ -5,7 +5,7 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Grid
 from textual.screen import Screen
-from textual.widgets import Button, Label, Static, Footer, Digits
+from textual.widgets import Button, Label, Input, Static, Footer, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
 import numpy as np
@@ -246,17 +246,32 @@ class MainScreen(Screen):
     def __init__(self):
         super().__init__()
         self.set_color_theme('orange')
+        self.input_field = self.create_input_field()
         self.theme_selector = self.create_theme_selector()
         self.color_selector = self.create_color_selector()
         self.game_mode_selector = self.create_game_mode_selector()
         self.play_button = self.create_play_button()
         self.main_container = Container(
+            self.input_field,
             self.theme_selector,
             self.color_selector,
             self.game_mode_selector,
             self.play_button,
             classes='main_container'
         )
+
+
+    def create_input_field(self) -> Input:
+        input_field = Input(
+            placeholder='Player Name',
+            type='text',
+            max_length=10,
+            classes='bordered'
+        )
+        input_field.border_title = 'Player'
+        input_field.styles.width = 30
+        input_field.styles.text_align = 'center'
+        return input_field
 
     def create_theme_selector(self) -> Selector:
         selector = Selector(
@@ -336,9 +351,20 @@ class MainScreen(Screen):
         next_widget_index = (self.get_focused_widget() - 1) % len(self.main_container.children)
         self.main_container.children[next_widget_index].focus()
 
+    def validate_player_name(self) -> str | None:
+        if len(player_name := self.input_field.value) < 3:
+            self.input_field.value = ''
+            self.input_field.placeholder = 'Use at least 3 letter' if player_name else 'Please enter your name'
+            self.main_container.children[0].focus()
+            return
+
+        self.input_field.value = ''
+        return player_name.capitalize()
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "play_button":
+        if (player_name := self.validate_player_name()) and event.button.id == "play_button":
             game_mode = self.game_mode_selector.value
+            print(player_name)
             self.app.push_screen(GameScreen(game_mode))
 
 
