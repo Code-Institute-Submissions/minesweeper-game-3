@@ -433,6 +433,7 @@ class GameScreen(Screen):
 class GameOverScreen(ModalScreen):
     BINDINGS = [
         ('escape', 'close_modal'),
+        ('left, right, a, d', 'next_button')
     ]
 
     def __init__(
@@ -446,21 +447,22 @@ class GameOverScreen(ModalScreen):
         super().__init__(**kwargs)
         self.on_close = on_close
         self.result_message = (
-            f'Congratulations, {player_name}! {Icons.PARTYPOPPER.value} You successfully found all '
+            f'Congratulations, {player_name}! You successfully found all '
             f'the mines in {timer}s! Great job!'
             if completed
             else (
-                f'Oops, {player_name}! {Icons.BOMB.value} You hit a mine and the game is over. '
+                f'Oops, {player_name}! You hit a mine and the game is over. '
                 'Better luck next time!'
             )
         )
-
-    def compose(self) -> ComposeResult:
-        yield Grid(
+        self.content = Grid(
             Label(self.result_message),
             Button("Quit", id="quit", classes='bordered'),
             Button("Cancel", id="cancel", classes='bordered'),
         )
+
+    def compose(self) -> ComposeResult:
+        yield self.content
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "quit":
@@ -473,6 +475,13 @@ class GameOverScreen(ModalScreen):
             self.on_close()
 
         self.app.pop_screen()
+
+    def action_next_button(self):
+        buttons = self.content.children[1:]
+        current_focus = next(button for button in buttons if button.has_focus)
+        current_index = buttons.index(current_focus)
+        next_index = (current_index + 1) % len(buttons)
+        buttons[next_index].focus()
 
 
 class MinesweeperApp(App):
