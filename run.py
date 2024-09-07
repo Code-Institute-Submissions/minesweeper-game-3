@@ -370,6 +370,9 @@ class MainScreen(Screen):
             game_mode = self.game_mode_selector.value
             self.app.push_screen(GameScreen(game_mode=game_mode, player_name=player_name))
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        self.action_next_widget()
+
 
 class GameScreen(Screen):
     BINDINGS = [
@@ -470,13 +473,13 @@ class GameOverScreen(ModalScreen):
 
         self.app.pop_screen()
 
-    def action_close_modal(self):
+    def action_close_modal(self) -> None:
         if callable(self.on_close):
             self.on_close()
 
         self.app.pop_screen()
 
-    def action_next_button(self):
+    def action_next_button(self) -> None:
         buttons = self.content.children[1:]
         current_focus = next(button for button in buttons if button.has_focus)
         current_index = buttons.index(current_focus)
