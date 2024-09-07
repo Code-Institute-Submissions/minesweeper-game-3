@@ -29,11 +29,13 @@ class DarkTheme(Enum):
 
 class GameMode(Enum):
     EASY = {'mine': 10, 'grid_size': (11, 8)}
-    MEDIUM = {'mine': 25, 'grid_size': (19, 14)}
-    HARD = {'mine': 50, 'grid_size': (25, 16)}
+    MEDIUM = {'mine': 30, 'grid_size': (19, 14)}
+    HARD = {'mine': 60, 'grid_size': (25, 16)}
 
 
 class Icons(Enum):
     MINE = '\u2747'
     STAR = '\u2738'
     SKULL = '\u2620'
+    PARTYPOPPER = '\U0001F389'
+    BOMB = '\U0001F4A3'

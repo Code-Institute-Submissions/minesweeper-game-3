@@ -4,7 +4,7 @@ import time
 from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Grid
-from textual.screen import Screen
+from textual.screen import Screen, ModalScreen
 from textual.widgets import Button, Label, Input, Static, Footer, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
@@ -78,10 +78,12 @@ class MinefieldUI(Grid):
             grid_size: tuple | None = (10, 10),
             number_of_mine: int | None = 10,
             is_playing: bool = False,
+            on_game_over: Callable = None,
             **kwargs
     ):
         super().__init__(**kwargs)
         self.is_playing = is_playing
+        self.on_game_over = on_game_over
         self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
         self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
@@ -100,16 +102,14 @@ class MinefieldUI(Grid):
             self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        print(self.is_playing)
         if not self.is_playing and not event.button.has_class('surface-bg'):
             self.is_playing = True
-
-        print(self.is_playing)
 
         if value := self.get_value_by_index(self.focused_button_index):
             if value >= 9:
                 self.uncover_all()
                 self.is_playing = False
+                self.game_over(completed=False)
             else:
                 self.set_button(self.focused_button_index)
         else:
@@ -176,6 +176,10 @@ class MinefieldUI(Grid):
             button.label, button.classes = str(value), 'surface-bg board-blue'
         else:
             button.label, button.classes = ' ', 'surface-bg'
+
+    def game_over(self, completed: bool = False) -> None:
+        if callable(self.on_game_over):
+            self.on_game_over(completed)
 
 
 class MinefieldLogic:
@@ -369,7 +373,7 @@ class MainScreen(Screen):
 
 class GameScreen(Screen):
     BINDINGS = [
-        ('q', 'quit_game')
+        ('escape, q', 'quit_game')
     ]
 
     def __init__(
@@ -383,7 +387,7 @@ class GameScreen(Screen):
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
-        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine)
+        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine, on_game_over=lambda x: self.toggle_game_over_modal(x))
         self.start_time = None
         self.counter = Digits('99', classes='digits')
         self.timer = Digits('00:00', classes='digits')
@@ -419,6 +423,55 @@ class GameScreen(Screen):
             self.timer.update(f'{minutes:02}{colon}{seconds:02}')
 
     def action_quit_game(self) -> None:
+        self.app.pop_screen()
+
+    def toggle_game_over_modal(self, completed):
+        modal = GameOverScreen(player_name=self.player_name, timer=self.timer.value, completed=completed)
+        self.app.push_screen(modal)
+
+
+class GameOverScreen(ModalScreen):
+    BINDINGS = [
+        ('escape', 'close_modal'),
+    ]
+
+    def __init__(
+            self,
+            player_name: str,
+            timer: str,
+            completed: bool = False,
+            on_close: Callable = None,
+            **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.on_close = on_close
+        self.result_message = (
+            f'Congratulations, {player_name}! {Icons.PARTYPOPPER.value} You successfully found all '
+            f'the mines in {timer}s! Great job!'
+            if completed
+            else (
+                f'Oops, {player_name}! {Icons.BOMB.value} You hit a mine and the game is over. '
+                'Better luck next time!'
+            )
+        )
+
+    def compose(self) -> ComposeResult:
+        yield Grid(
+            Label(self.result_message),
+            Button("Quit", id="quit", classes='bordered'),
+            Button("Cancel", id="cancel", classes='bordered'),
+        )
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "quit":
+            self.app.pop_screen()
+
+        self.app.pop_screen()
+
+    def action_close_modal(self):
+        if callable(self.on_close):
+            self.on_close()
+
         self.app.pop_screen()
 
 
