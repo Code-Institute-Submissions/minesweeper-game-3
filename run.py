@@ -260,15 +260,15 @@ class MainScreen(Screen):
             classes='main_container'
         )
 
-
     def create_input_field(self) -> Input:
         input_field = Input(
-            placeholder='Player Name',
+            placeholder='Please enter your name',
             type='text',
             max_length=10,
             classes='bordered'
         )
         input_field.border_title = 'Player'
+        input_field.styles.text_style = 'bold'
         input_field.styles.width = 30
         input_field.styles.text_align = 'center'
         return input_field
@@ -364,8 +364,7 @@ class MainScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if (player_name := self.validate_player_name()) and event.button.id == "play_button":
             game_mode = self.game_mode_selector.value
-            print(player_name)
-            self.app.push_screen(GameScreen(game_mode))
+            self.app.push_screen(GameScreen(game_mode=game_mode, player_name=player_name))
 
 
 class GameScreen(Screen):
@@ -373,8 +372,14 @@ class GameScreen(Screen):
         ('q', 'quit_game')
     ]
 
-    def __init__(self, game_mode, **kwargs):
+    def __init__(
+            self,
+            game_mode: str,
+            player_name: str,
+            **kwargs
+    ):
         super().__init__(**kwargs)
+        self.player_name = player_name
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
@@ -386,7 +391,7 @@ class GameScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Horizontal(
             self.counter,
-            Container(Label('Minesweeper Game'), classes='title'),
+            Container(Label(f'Player: {self.player_name}'), classes='title'),
             self.timer,
             classes='header'
         )
