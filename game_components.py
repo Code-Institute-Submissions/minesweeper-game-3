@@ -2,7 +2,7 @@ from typing import List, Callable
 
 from textual import events
 from textual.app import ComposeResult
-from textual.containers import Grid
+from textual.containers import Grid, Horizontal
 from textual.screen import ModalScreen
 from textual.widgets import Button, Label, Static
 from configurations import Icons
@@ -292,3 +292,26 @@ class GameOverScreen(ModalScreen):
         current_index = buttons.index(current_focus)
         next_index = (current_index + 1) % len(buttons)
         buttons[next_index].focus()
+
+
+class ControlsFooter(Horizontal):
+    DEFAULT_CSS = """
+    ControlsFooter {
+        height: 1;
+        padding: 0 1;
+        background: $background;
+    }
+    """
+
+    def __init__(
+            self,
+            bindings: dict | None = None,
+            **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.bindings = bindings
+        self.build()
+
+    def build(self) -> None:
+        for key, description in self.bindings.items():
+            self.compose_add_child(Label(f'[bold]{key}:[/bold] {description} [bold]|[/bold] '))

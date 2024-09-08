@@ -7,7 +7,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Label, Input, Footer, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode
-from game_components import Selector, MinefieldUI, GameOverScreen
+from game_components import ControlsFooter, Selector, MinefieldUI, GameOverScreen
 
 
 class MainScreen(Screen):
@@ -107,9 +107,18 @@ class MainScreen(Screen):
         return button
 
     def compose(self) -> ComposeResult:
-        yield Horizontal(Label(f'<------ Minesweeper Game ------>'), classes='header')
+        yield Horizontal(
+            Label(f'\U0001F4A3 Minesweeper Game \U0001F4A3'),
+            classes='header'
+        )
         yield self.main_container
-        yield Footer()
+        yield ControlsFooter(
+            bindings={
+                '(\U00002191 \U00002193)/(w s)': 'Move Up & Down',
+                '(\U00002190 \U00002192)/(a d)': 'Set option',
+                'enter': 'Start Game'
+            }
+        )
 
     def get_focused_widget(self) -> int:
         for index, widget in enumerate(self.main_container.children):
@@ -175,7 +184,14 @@ class GameScreen(Screen):
             self.game_board,
             classes='main_container'
         )
-        yield Footer()
+        yield ControlsFooter(
+            bindings={
+                'esc/q': 'Quit',
+                '(\U00002191 \U00002190 \U00002193 \U00002192)/(w a s d)': 'Navigation',
+                'enter': 'Hit',
+                'space/f': 'Place flag'
+            }
+        )
 
     def on_key(self, event: events.Key) -> None:
         if event.key == 'enter' and not self.game_board.is_playing:
