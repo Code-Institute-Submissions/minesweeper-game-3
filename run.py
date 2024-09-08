@@ -168,7 +168,7 @@ class GameScreen(Screen):
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
-        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine, on_game_over=lambda x: self.toggle_game_over_modal(x))
+        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine, on_game_over=lambda x: self.toggle_game_over_modal(x), on_flag=lambda x: print(x))
         self.start_time = None
         self.counter = Digits('99', classes='digits')
         self.timer = Digits('00:00', classes='digits')

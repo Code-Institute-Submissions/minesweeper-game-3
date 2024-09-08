@@ -77,14 +77,16 @@ class MinefieldUI(Grid):
             number_of_mine: int | None = 10,
             is_playing: bool = False,
             on_game_over: Callable = None,
+            on_flag: Callable = None,
             **kwargs
     ):
         super().__init__(**kwargs)
         self.is_playing = is_playing
         self.on_game_over = on_game_over
-        self.number_of_mine = number_of_mine
+        self.on_flag = on_flag
+        self.remaining_mines = number_of_mine
         self.grid_width, self.grid_height = grid_size
-        self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=self.number_of_mine)
+        self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=number_of_mine)
         self.game_matrix = self.game.game_matrix
         self.flat_game_matrix = self.game_matrix.flatten()
         self.styles.grid_size_columns = self.grid_width
@@ -108,7 +110,6 @@ class MinefieldUI(Grid):
                 self.uncover_all()
                 self.is_playing = False
                 self.game_over(completed=False)
-                # self.app.push_screen(GameOverScreen())
             else:
                 self.set_button(self.focused_button_index)
         else:
@@ -141,7 +142,15 @@ class MinefieldUI(Grid):
     def action_toggle_flag(self) -> None:
         button = self.children[self.focused_button_index]
         if not button.has_class('surface-bg'):
-            button.label = '\u2691' if not button.label else ''
+            if not button.label and self.remaining_mines > 0:
+                button.label = '\u2691'
+                self.remaining_mines -= 1
+            elif button.label:
+                button.label = ''
+                self.remaining_mines += 1
+
+            if callable(self.on_flag):
+                self.on_flag(self.remaining_mines)
 
     def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
@@ -179,7 +188,8 @@ class MinefieldUI(Grid):
             button.label = str(value)
             button.classes = 'surface-bg block-blue'
         else:
-            button.label, button.classes = ' ', 'surface-bg'
+            button.label = ' '
+            button.classes = 'surface-bg'
 
     def game_over(self, completed: bool = False) -> None:
         if callable(self.on_game_over):
