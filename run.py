@@ -134,9 +134,11 @@ class MainScreen(Screen):
         self.main_container.children[next_widget_index].focus()
 
     def validate_player_name(self) -> str | None:
-        if len(player_name := self.input_field.value) < 3:
+        player_name = self.input_field.value.strip()
+
+        if len(player_name) < 3:
             self.input_field.value = ''
-            self.input_field.placeholder = 'Use at least 3 letter' if player_name else 'Please enter your name'
+            self.input_field.placeholder = 'Use at least 3 letters' if player_name else 'Please enter your name'
             self.main_container.children[0].focus()
             return
 
