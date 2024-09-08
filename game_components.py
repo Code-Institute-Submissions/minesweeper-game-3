@@ -140,7 +140,8 @@ class MinefieldUI(Grid):
 
     def action_toggle_flag(self) -> None:
         button = self.children[self.focused_button_index]
-        button.label = '\u2691' if not button.label else ''
+        if not button.has_class('surface-bg'):
+            button.label = '\u2691' if not button.label else ''
 
     def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
