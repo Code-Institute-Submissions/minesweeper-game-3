@@ -187,7 +187,7 @@ class GameScreen(Screen):
         yield ControlsFooter(
             bindings={
                 'esc/q': 'Quit',
-                '(\U00002191 \U00002190 \U00002193 \U00002192)/(w a s d)': 'Navigation',
+                '(\U00002191 \U00002190 \U00002193 \U00002192)/(w a s d)': 'Navigate',
                 'enter': 'Hit',
                 'space/f': 'Place flag'
             }

@@ -166,13 +166,17 @@ class MinefieldUI(Grid):
         button = self.children[button_index]
         value = self.get_value_by_index(button_index)
         if value >= 9:
-            button.label, button.classes = Icons.MINE.value, f'surface-bg board-red'
+            button.label = Icons.MINE.value
+            button.classes = 'surface-bg block-red'
         elif value >= 3:
-            button.label, button.classes = str(value), 'surface-bg board-red'
+            button.label = str(value)
+            button.classes = 'surface-bg block-orange'
         elif value == 2:
-            button.label, button.classes = str(value), 'surface-bg board-green'
+            button.label = str(value)
+            button.classes = 'surface-bg block-green'
         elif value == 1:
-            button.label, button.classes = str(value), 'surface-bg board-blue'
+            button.label = str(value)
+            button.classes = 'surface-bg block-blue'
         else:
             button.label, button.classes = ' ', 'surface-bg'
 

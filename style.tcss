@@ -17,10 +17,6 @@
     color: $primary;
 }
 
-Footer {
-    background: $background;
-}
-
 .main_container {
     align: center middle;
     border: round $primary;
@@ -103,16 +99,18 @@ MinefieldUI {
     border: none;
 }
 
-.board-red {
-    color: red;
+.block-red {
+    color: darkviolet;
 }
 
-.board-green {
-    color: green;
+.block-orange {
+    color: orangered;
 }
 
-.board-blue {
-    color: blue;
+.block-green {
+    color: limegreen;
 }
 
-
+.block-blue {
+    color: dodgerblue;
+}
