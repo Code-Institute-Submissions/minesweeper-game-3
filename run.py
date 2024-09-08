@@ -168,14 +168,20 @@ class GameScreen(Screen):
         self.game_mode = GameMode[game_mode.upper()].value
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
-        self.game_board = MinefieldUI(grid_size=self.grid_size, number_of_mine=self.mine, on_game_over=lambda x: self.toggle_game_over_modal(x), on_flag=lambda x: print(x))
         self.start_time = None
-        self.counter = Digits('99', classes='digits')
+        self.flag_counter = Digits('00', classes='digits')
+        self.update_flag_counter(self.mine)
         self.timer = Digits('00:00', classes='digits')
+        self.game_board = MinefieldUI(
+            grid_size=self.grid_size,
+            number_of_mine=self.mine,
+            on_game_over=lambda x: self.toggle_game_over_modal(x),
+            on_flag=lambda x: self.update_flag_counter(x)
+        )
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
-            self.counter,
+            self.flag_counter,
             Container(Label(f'Player: {self.player_name}'), classes='title'),
             self.timer,
             classes='header'
@@ -209,6 +215,9 @@ class GameScreen(Screen):
             minutes, seconds = divmod(int(elapsed_time), 60)
             colon = ':' if seconds % 2 else ' '
             self.timer.update(f'{minutes:02}{colon}{seconds:02}')
+
+    def update_flag_counter(self, value: int) -> None:
+        self.flag_counter.update(f'{value:02}')
 
     def action_quit_game(self) -> None:
         self.app.pop_screen()
