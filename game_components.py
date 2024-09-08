@@ -84,6 +84,7 @@ class MinefieldUI(Grid):
         self.is_playing = is_playing
         self.on_game_over = on_game_over
         self.on_flag = on_flag
+        self.placed_flags = set()
         self.remaining_mines = number_of_mine
         self.grid_width, self.grid_height = grid_size
         self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=number_of_mine)
@@ -107,7 +108,6 @@ class MinefieldUI(Grid):
 
         if value := self.get_value_by_index(self.focused_button_index):
             if value >= 9:
-                self.uncover_all()
                 self.is_playing = False
                 self.game_over(completed=False)
             else:
@@ -145,12 +145,17 @@ class MinefieldUI(Grid):
             if not button.label and self.remaining_mines > 0:
                 button.label = '\u2691'
                 self.remaining_mines -= 1
+                self.placed_flags.add(self.index_to_position(self.focused_button_index))
             elif button.label:
                 button.label = ''
                 self.remaining_mines += 1
+                self.placed_flags.remove(self.index_to_position(self.focused_button_index))
 
             if callable(self.on_flag):
                 self.on_flag(self.remaining_mines)
+
+            if not self.remaining_mines and self.game.validate_flags(self.placed_flags):
+                self.game_over(completed=True)
 
     def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
@@ -192,6 +197,7 @@ class MinefieldUI(Grid):
             button.classes = 'surface-bg'
 
     def game_over(self, completed: bool = False) -> None:
+        self.uncover_all()
         if callable(self.on_game_over):
             self.on_game_over(completed)
 
@@ -241,6 +247,10 @@ class MinefieldLogic:
 
     def get_connected_component(self, position: list | tuple) -> np.ndarray:
         return np.argwhere(self.labeled_components == self.labeled_components[position])
+
+    def validate_flags(self, flags: set) -> bool:
+        mine_positions = set(map(tuple, np.argwhere(self.game_matrix >= 9).tolist()))
+        return not bool(set.difference(mine_positions, flags))
 
     def get_connected_component_with_frame(self, position: list | tuple) -> np.ndarray:
         zeros = np.zeros_like(self.game_matrix, dtype=np.uint8)
