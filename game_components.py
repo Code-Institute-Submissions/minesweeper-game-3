@@ -177,7 +177,7 @@ class MinefieldUI(Grid):
 
         if increment > 0:
             self.placed_flags.remove(position)
-        else:
+        elif increment < 0:
             self.placed_flags.add(position)
 
         if callable(self.on_flag) and self.is_playing:
