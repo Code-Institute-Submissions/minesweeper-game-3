@@ -1,4 +1,4 @@
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Tuple
 
 from textual import events
 from textual.app import ComposeResult
@@ -79,11 +79,11 @@ class MinefieldUI(Grid):
 
     def __init__(
             self,
-            grid_size: tuple | None = (10, 10),
-            number_of_mine: int | None = 10,
+            grid_size: Optional[Tuple[int, int]] = (10, 10),
+            number_of_mine: Optional[int] = 10,
             is_playing: bool = False,
-            on_game_over: Callable = None,
-            on_flag: Callable = None,
+            on_game_over: Optional[Callable] = None,
+            on_flag: Optional[Callable] = None,
             **kwargs
     ):
         super().__init__(**kwargs)
@@ -97,12 +97,15 @@ class MinefieldUI(Grid):
         self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=number_of_mine)
         self.game_matrix = self.game.game_matrix
         self.flat_game_matrix = self.game_matrix.flatten()
+        self.focused_button_index = 0
+        self.setup_styles()
+        self.build()
+
+    def setup_styles(self) -> None:
         self.styles.grid_size_columns = self.grid_width
         self.styles.grid_size_rows = self.grid_height
         self.styles.width = self.grid_width * 3 + 2
         self.styles.height = self.grid_height + 2
-        self.focused_button_index = 0
-        self.build()
 
     def build(self) -> None:
         for i in range(self.grid_width * self.grid_height):
@@ -114,12 +117,15 @@ class MinefieldUI(Grid):
             self.is_playing = True
 
         if (value := self.get_value_by_index(self.focused_button_index)) and self.is_playing:
-            if value >= 9:
-                self.game_over(completed=False)
-            else:
-                self.set_button(self.focused_button_index)
+            self.handle_button_press(value)
         else:
             self.uncover_connected_zeros()
+
+    def handle_button_press(self, value: int) -> None:
+        if value >= 9:
+            self.game_over(completed=False)
+        else:
+            self.set_button(self.focused_button_index)
 
     def on_mount(self):
         self.update_focus()
@@ -184,7 +190,7 @@ class MinefieldUI(Grid):
         for pos in positions:
             self.set_button(self.position_to_index(pos))
 
-    def position_to_index(self, position: list | tuple) -> int:
+    def position_to_index(self, position: tuple) -> int:
         return position[0] * self.grid_width + position[1]
 
     def index_to_position(self, index: int) -> tuple:
@@ -199,7 +205,11 @@ class MinefieldUI(Grid):
         return int(self.flat_game_matrix[index])
 
     def set_button(self, button_index: int) -> None:
-        if (position := self.index_to_position(button_index)) in self.placed_flags:
+        if button_index < 0 or button_index >= len(self.children):
+            return
+
+        position = self.index_to_position(button_index)
+        if position in self.placed_flags:
             self.update_flag(increment=1, position=position)
 
         button = self.children[button_index]
