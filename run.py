@@ -214,8 +214,7 @@ class GameScreen(Screen):
         if self.game_board.is_playing:
             elapsed_time = time.time() - self.start_time
             minutes, seconds = divmod(int(elapsed_time), 60)
-            colon = ':' if seconds % 2 else ' '
-            self.timer.update(f'{minutes:02}{colon}{seconds:02}')
+            self.timer.update(f'{minutes:02}:{seconds:02}')
 
     def update_flag_counter(self, value: int) -> None:
         self.flag_counter.update(f'{value:02}')
