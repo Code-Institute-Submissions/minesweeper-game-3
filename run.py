@@ -4,7 +4,7 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
 from textual.screen import Screen
-from textual.widgets import Button, Label, Input, Footer, Digits
+from textual.widgets import Button, Label, Input, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode
 from game_components import ControlsFooter, Selector, MinefieldUI, GameOverScreen
@@ -202,8 +202,7 @@ class GameScreen(Screen):
         )
 
     def on_key(self, event: events.Key) -> None:
-        if event.key == 'enter' and not self.game_board.is_playing:
-            print('start timer...')
+        if event.key in ('enter', 'space') and not self.game_board.is_playing:
             self.start_timer()
 
     def start_timer(self) -> None:

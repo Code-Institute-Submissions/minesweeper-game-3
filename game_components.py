@@ -81,11 +81,12 @@ class MinefieldUI(Grid):
             **kwargs
     ):
         super().__init__(**kwargs)
+        self.is_game_over = False
         self.is_playing = is_playing
         self.on_game_over = on_game_over
         self.on_flag = on_flag
         self.placed_flags = set()
-        self.remaining_mines = number_of_mine
+        self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
         self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=number_of_mine)
         self.game_matrix = self.game.game_matrix
@@ -139,24 +140,36 @@ class MinefieldUI(Grid):
         self.update_focus()
 
     def action_toggle_flag(self) -> None:
+        if not self.is_playing and not self.is_game_over:
+            self.is_playing = True
+
         button = self.children[self.focused_button_index]
         if not button.has_class('surface-bg'):
-            remaining_flags = self.remaining_mines - len(self.placed_flags)
-            print(remaining_flags)
-            if not button.label and self.remaining_mines > 0:
-                button.label = '\u2691'
-                self.remaining_mines -= 1
-                self.placed_flags.add(self.index_to_position(self.focused_button_index))
+            position = self.index_to_position(self.focused_button_index)
+            increment = 0
+
+            if not button.label and self.number_of_mine > 0:
+                button.label = f'{Icons.FLAG.value}'
+                increment = -1
             elif button.label:
                 button.label = ''
-                self.remaining_mines += 1
-                self.placed_flags.remove(self.index_to_position(self.focused_button_index))
+                increment = 1
 
-            if callable(self.on_flag):
-                self.on_flag(self.remaining_mines)
+            self.update_flag(increment, position)
 
-            if not self.remaining_mines and self.game.validate_flags(self.placed_flags):
+            if not self.number_of_mine and self.game.validate_flags(self.placed_flags):
                 self.game_over(completed=True)
+
+    def update_flag(self, increment: int, position: tuple) -> None:
+        self.number_of_mine += increment
+
+        if increment > 0:
+            self.placed_flags.remove(position)
+        else:
+            self.placed_flags.add(position)
+
+        if callable(self.on_flag) and self.is_playing:
+            self.on_flag(self.number_of_mine)
 
     def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
@@ -172,6 +185,7 @@ class MinefieldUI(Grid):
         return divmod(index, self.grid_width)
 
     def uncover_all(self) -> None:
+        self.is_playing = False
         for button_index in range(len(self.children)):
             self.set_button(button_index)
 
@@ -179,6 +193,9 @@ class MinefieldUI(Grid):
         return int(self.flat_game_matrix[index])
 
     def set_button(self, button_index: int) -> None:
+        if (position := self.index_to_position(button_index)) in self.placed_flags:
+            self.update_flag(increment=1, position=position)
+
         button = self.children[button_index]
         value = self.get_value_by_index(button_index)
         if value >= 9:
@@ -199,7 +216,7 @@ class MinefieldUI(Grid):
 
     def game_over(self, completed: bool = False) -> None:
         self.uncover_all()
-        self.is_playing = False
+        self.is_game_over = True
         if callable(self.on_game_over):
             self.on_game_over(completed)
 
