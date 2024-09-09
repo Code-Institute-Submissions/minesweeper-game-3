@@ -106,9 +106,8 @@ class MinefieldUI(Grid):
         if not self.is_playing and not event.button.has_class('surface-bg'):
             self.is_playing = True
 
-        if value := self.get_value_by_index(self.focused_button_index):
+        if (value := self.get_value_by_index(self.focused_button_index)) and self.is_playing:
             if value >= 9:
-                self.is_playing = False
                 self.game_over(completed=False)
             else:
                 self.set_button(self.focused_button_index)
@@ -142,6 +141,8 @@ class MinefieldUI(Grid):
     def action_toggle_flag(self) -> None:
         button = self.children[self.focused_button_index]
         if not button.has_class('surface-bg'):
+            remaining_flags = self.remaining_mines - len(self.placed_flags)
+            print(remaining_flags)
             if not button.label and self.remaining_mines > 0:
                 button.label = '\u2691'
                 self.remaining_mines -= 1
@@ -198,6 +199,7 @@ class MinefieldUI(Grid):
 
     def game_over(self, completed: bool = False) -> None:
         self.uncover_all()
+        self.is_playing = False
         if callable(self.on_game_over):
             self.on_game_over(completed)
 
