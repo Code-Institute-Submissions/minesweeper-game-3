@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Callable, Optional
 
 from textual import events
 from textual.app import ComposeResult
@@ -28,38 +28,43 @@ class Selector(Static, can_focus=True):
 
     def __init__(
             self,
-            options: List[str] | None = None,
+            options: Optional[List[str]] = None,
             current_index: int = 0,
-            value: str | None = None,
-            on_change: Callable = None,
+            value: Optional[str] = None,
+            on_change: Optional[Callable] = None,
             width: int = 30,
             **kwargs
     ):
         super().__init__(**kwargs)
-        self.options = options
+        self.options = options if options is not None else []
         self.current_index = current_index
         self.value = value
         self.on_change = on_change
         self.width = self.styles.width = width
 
     def on_mount(self) -> None:
-        self.update_text()
-        self.value = self.options[self.current_index]
+        if self.options:
+            self.update_text()
+            self.value = self.options[self.current_index]
 
     def action_next_option(self) -> None:
-        self.current_index = (self.current_index + 1) % len(self.options)
-        self.update_text()
-        self.update_value()
+        self._update_index(increment=True)
 
     def action_previous_option(self) -> None:
-        self.current_index = (self.current_index - 1) % len(self.options)
+        self._update_index(increment=False)
+
+    def _update_index(self, increment: bool) -> None:
+        direction = 1 if increment else -1
+        self.current_index = (
+            self.current_index + direction
+        ) % len(self.options)
         self.update_text()
         self.update_value()
 
     def update_text(self) -> None:
-        text_area_width = self.width - 6 if self.styles.border else self.width - 4
-        centered_option = self.options[self.current_index].center(text_area_width)
-        self.update(f' {Icons.LEFT.value}{centered_option}{Icons.RIGHT.value} ')
+        area_width = self.width - 6 if self.styles.border else self.width - 4
+        centered_text = self.options[self.current_index].center(area_width)
+        self.update(f' {Icons.LEFT.value}{centered_text}{Icons.RIGHT.value} ')
 
     def update_value(self) -> None:
         self.value = self.options[self.current_index]
