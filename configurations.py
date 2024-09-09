@@ -37,4 +37,5 @@ class Icons(Enum):
     MINE = '\u2747'
     STAR = '\u2738'
     SKULL = '\u2620'
+    FLAG = '\u2691'
 

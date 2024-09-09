@@ -45,7 +45,7 @@ GameOverScreen {
         grid-rows: 1fr 3;
         padding: 0 2;
         width: 50;
-        height: 12;
+        height: 11;
         border: thick $background;
         background: $primary;
     }
