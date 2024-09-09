@@ -58,7 +58,8 @@ class Selector(Static, can_focus=True):
 
     def update_text(self) -> None:
         text_area_width = self.width - 6 if self.styles.border else self.width - 4
-        self.update(f' \u2B9C{self.options[self.current_index].center(text_area_width)}\u2B9E ')
+        centered_option = self.options[self.current_index].center(text_area_width)
+        self.update(f' {Icons.LEFT.value}{centered_option}{Icons.RIGHT.value} ')
 
     def update_value(self) -> None:
         self.value = self.options[self.current_index]

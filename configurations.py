@@ -35,7 +35,11 @@ class GameMode(Enum):
 
 class Icons(Enum):
     MINE = '\u2747'
-    STAR = '\u2738'
+    BOMB = '\U0001F4A3'
     SKULL = '\u2620'
     FLAG = '\u2691'
+    LEFT = '\u2B9C'
+    RIGHT = '\u2B9E'
+    UP = '\u2B9D'
+    DOWN = '\u2B9F'
 

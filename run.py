@@ -6,7 +6,7 @@ from textual.containers import Container, Horizontal
 from textual.screen import Screen
 from textual.widgets import Button, Label, Input, Digits
 from textual.color import Color
-from configurations import Hue, DarkTheme, LightTheme, GameMode
+from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
 from game_components import ControlsFooter, Selector, MinefieldUI, GameOverScreen
 
 
@@ -108,14 +108,14 @@ class MainScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
-            Label(f'\U0001F4A3 Minesweeper Game \U0001F4A3'),
+            Label(f'{Icons.BOMB.value} Minesweeper Game {Icons.BOMB.value}'),
             classes='header'
         )
         yield self.main_container
         yield ControlsFooter(
             bindings={
-                '(\U00002191 \U00002193)/(w s)': 'Move Up & Down',
-                '(\U00002190 \U00002192)/(a d)': 'Set option',
+                f'{Icons.UP.value} {Icons.DOWN.value} / w, s ': 'Move Up & Down',
+                f'{Icons.LEFT.value} {Icons.RIGHT.value} / a, d ': 'Set option',
                 'enter': 'Start Game'
             }
         )
@@ -195,7 +195,7 @@ class GameScreen(Screen):
         yield ControlsFooter(
             bindings={
                 'esc/q': 'Quit',
-                '(\U00002191 \U00002190 \U00002193 \U00002192)/(w a s d)': 'Navigate',
+                f'{Icons.UP.value} {Icons.LEFT.value} {Icons.DOWN.value} {Icons.RIGHT.value} / w, a, s, d ': 'Move',
                 'enter': 'Hit',
                 'space/f': 'Place flag'
             }
