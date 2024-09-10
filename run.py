@@ -16,12 +16,25 @@ from game_components import (
 
 
 class MainScreen(Screen):
+    """
+    Main screen for setting up game preferences and starting the game.
+
+    Attributes:
+        BINDINGS (List[Tuple[str, str]]): Key bindings for widget navigation.
+    """
+
     BINDINGS = [
         ('up, w', 'previous_widget'),
         ('down, s', 'next_widget')
     ]
 
     def __init__(self):
+        """
+        Initializes the MainScreen with input fields, selectors, and button.
+
+        :return: None
+        """
+
         super().__init__()
         self.set_color_theme('orange')
         self.input_field = self.create_input_field()
@@ -39,6 +52,13 @@ class MainScreen(Screen):
         )
 
     def create_input_field(self) -> Input:
+        """
+        Creates and configures the input field for player name.
+
+        :return: Configured Input field.
+        :rtype: Input
+        """
+
         input_field = Input(
             placeholder='Please enter your name',
             type='text',
@@ -52,6 +72,13 @@ class MainScreen(Screen):
         return input_field
 
     def create_theme_selector(self) -> Selector:
+        """
+        Creates a selector for theme (Dark or Light).
+
+        :return: Configured theme Selector.
+        :rtype: Selector
+        """
+
         selector = Selector(
             options=['Dark', 'Light'],
             classes='bordered',
@@ -62,6 +89,13 @@ class MainScreen(Screen):
         return selector
 
     def create_color_selector(self) -> Selector:
+        """
+        Creates a selector for color themes.
+
+        :return: Configured color Selector.
+        :rtype: Selector
+        """
+
         selector = Selector(
             options=[
                 'Orange',
@@ -80,6 +114,14 @@ class MainScreen(Screen):
         return selector
 
     def set_color_theme(self, color: str) -> None:
+        """
+        Sets the color theme for the app based on the selected color.
+
+        :param color: Selected color for the theme.
+        :type color: str
+        :return: None
+        """
+
         hue = Hue[color.upper()].value / 360
         modes = {
             'dark': {
@@ -118,6 +160,13 @@ class MainScreen(Screen):
         self.app.dark = not self.app.dark
 
     def create_game_mode_selector(self) -> Selector:
+        """
+        Creates a selector for game difficulty levels.
+
+        :return: Configured game mode Selector.
+        :rtype: Selector
+        """
+
         selector = Selector(
             options=['Easy', 'Medium', 'Hard'],
             classes='bordered'
@@ -127,11 +176,25 @@ class MainScreen(Screen):
         return selector
 
     def create_play_button(self) -> Button:
+        """
+        Creates the play button for starting the game.
+
+        :return: Configured Play button.
+        :rtype: Button
+        """
+
         button = Button("Play", id="play_button", classes='bordered')
         button.styles.width = 40
         return button
 
     def compose(self) -> ComposeResult:
+        """
+        Yields the layout components for the MainScreen.
+
+        :return: Layout components for the screen.
+        :rtype: ComposeResult
+        """
+
         yield Horizontal(
             Label(f'{Icons.BOMB.value} Minesweeper Game {Icons.BOMB.value}'),
             classes='header'
@@ -146,21 +209,47 @@ class MainScreen(Screen):
         )
 
     def get_focused_widget(self) -> int | None:
+        """
+        Returns the index of the currently focused widget.
+
+        :return: Index of the focused widget or None.
+        :rtype: int or None
+        """
+
         for index, widget in enumerate(self.main_container.children):
             if widget.has_focus:
                 return index
 
     def action_next_widget(self) -> None:
+        """
+        Focuses the next widget in the container.
+
+        :return: None
+        """
+
         focused = self.get_focused_widget()
         next_widget_index = (focused + 1) % len(self.main_container.children)
         self.main_container.children[next_widget_index].focus()
 
     def action_previous_widget(self) -> None:
+        """
+        Focuses the previous widget in the container.
+
+        :return: None
+        """
+
         focused = self.get_focused_widget()
         next_widget_index = (focused - 1) % len(self.main_container.children)
         self.main_container.children[next_widget_index].focus()
 
     def validate_player_name(self) -> str | None:
+        """
+        Validates and returns the player name if valid.
+
+        :return: Validated player name or None.
+        :rtype: str or None
+        """
+
         player_name = self.input_field.value.strip()
 
         if len(player_name) < 3:
@@ -177,6 +266,14 @@ class MainScreen(Screen):
         return player_name.capitalize()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """
+        Handles button presses to start the game with the player name.
+
+        :param event: The button press event.
+        :type event: Button.Pressed
+        :return: None
+        """
+
         player_name = self.validate_player_name()
         if player_name and event.button.id == "play_button":
             game_mode = self.game_mode_selector.value
@@ -188,10 +285,25 @@ class MainScreen(Screen):
             )
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
+        """
+        Moves focus to the next widget when input is submitted.
+
+        :param event: The input submission event.
+        :type event: Input.Submitted
+        :return: None
+        """
+
         self.action_next_widget()
 
 
 class GameScreen(Screen):
+    """
+    Screen for the game where the Minesweeper game is played.
+
+    Attributes:
+        BINDINGS (List[Tuple[str, str]]): Key bindings for quitting the game.
+    """
+
     BINDINGS = [
         ('escape, q', 'quit_game')
     ]
@@ -202,6 +314,18 @@ class GameScreen(Screen):
             player_name: str,
             **kwargs
     ):
+        """
+        Initializes the GameScreen with game mode and player name.
+
+        :param game_mode: The selected game mode.
+        :type game_mode: str
+        :param player_name: The name of the player.
+        :type player_name: str
+        :param kwargs: Additional keyword arguments.
+        :type kwargs: dict
+        :return: None
+        """
+
         super().__init__(**kwargs)
         self.player_name = player_name
         self.game_mode = GameMode[game_mode.upper()].value
@@ -225,6 +349,13 @@ class GameScreen(Screen):
         self.update_flag_counter(self.mine)
 
     def compose(self) -> ComposeResult:
+        """
+        Yields the layout components for the GameScreen.
+
+        :return: Layout components for the screen.
+        :rtype: ComposeResult
+        """
+
         yield Horizontal(
             self.flag_counter,
             Container(Label(f'Player: {self.player_name}'), classes='title'),
@@ -248,27 +379,69 @@ class GameScreen(Screen):
         )
 
     def on_key(self, event: events.Key) -> None:
+        """
+        Handles key events to start the timer when appropriate.
+
+        :param event: The key event.
+        :type event: events.Key
+        :return: None
+        """
+
         if event.key in ('enter', 'space') and not self.game_board.is_playing:
             self.start_timer()
 
     def start_timer(self) -> None:
+        """
+        Starts the game timer and updates it every second.
+
+        :return: None
+        """
+
         self.start_time = time.time()
         self.update_timer()
         self.set_interval(1, self.update_timer)
 
     def update_timer(self) -> None:
+        """
+        Updates the timer display with elapsed time.
+
+        :return: None
+        """
+
         if self.game_board.is_playing:
             elapsed_time = time.time() - self.start_time
             minutes, seconds = divmod(int(elapsed_time), 60)
             self.timer.update(f'{minutes:02}:{seconds:02}')
 
     def update_flag_counter(self, value: int) -> None:
+        """
+        Updates the flag counter display.
+
+        :param value: The number of remaining flags.
+        :type value: int
+        :return: None
+        """
+
         self.flag_counter.update(f'{value:02}')
 
     def action_quit_game(self) -> None:
+        """
+        Handles quitting the game and returning to the previous screen.
+
+        :return: None
+        """
+
         self.app.pop_screen()
 
     def toggle_game_over_modal(self, completed):
+        """
+        Displays the game over modal with the result message.
+
+        :param completed: Whether the game was completed successfully.
+        :type completed: bool
+        :return: None
+        """
+
         modal = GameOverScreen(
             player_name=self.player_name,
             timer=self.timer.value,
@@ -278,9 +451,23 @@ class GameScreen(Screen):
 
 
 class MinesweeperApp(App):
+    """
+    Main application class for the Minesweeper game.
+
+    Attributes:
+        CSS_PATH (str): Path to the CSS file for styling.
+    """
+
     CSS_PATH = "style.tcss"
 
     def on_mount(self) -> None:
+        """
+        Called when the application is mounted. Pushes the MainScreen
+        onto the screen stack.
+
+        :return: None
+        """
+
         self.push_screen(MainScreen())
 
 

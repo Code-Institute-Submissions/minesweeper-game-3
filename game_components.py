@@ -60,7 +60,7 @@ class Selector(Static, can_focus=True):
         :param width: Width of the Selector component.
         :type width: int
         :param kwargs: Additional keyword arguments.
-        :type kwargs: dict
+        :type kwargs: str
         :return: None
         """
 
