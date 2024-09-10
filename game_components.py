@@ -94,7 +94,11 @@ class MinefieldUI(Grid):
         self.placed_flags = set()
         self.number_of_mine = number_of_mine
         self.grid_width, self.grid_height = grid_size
-        self.game = MinefieldLogic(cols=self.grid_width, rows=self.grid_height, number_of_mines=number_of_mine)
+        self.game = MinefieldLogic(
+            cols=self.grid_width,
+            rows=self.grid_height,
+            number_of_mines=number_of_mine
+        )
         self.game_matrix = self.game.game_matrix
         self.flat_game_matrix = self.game_matrix.flatten()
         self.focused_button_index = 0
@@ -110,13 +114,20 @@ class MinefieldUI(Grid):
     def build(self) -> None:
         for i in range(self.grid_width * self.grid_height):
             color_class = 'primary-bg' if i % 2 else 'secondary-bg'
-            self.compose_add_child(Button('', classes=f'game_button {color_class}', id=f'id_{i}'))
+            self.compose_add_child(
+                Button(
+                    label='',
+                    classes=f'game_button {color_class}',
+                    id=f'id_{i}'
+                )
+            )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if not self.is_playing and not event.button.has_class('surface-bg'):
             self.is_playing = True
 
-        if (value := self.get_value_by_index(self.focused_button_index)) and self.is_playing:
+        value = self.get_value_by_index(self.focused_button_index)
+        if value and self.is_playing:
             self.handle_button_press(value)
         else:
             self.uncover_connected_zeros()
@@ -136,17 +147,19 @@ class MinefieldUI(Grid):
             button.focus()
 
     def on_key(self, event: events.Key) -> None:
+        button_index = self.focused_button_index
+
         if event.key in ('up', 'w'):
-            if self.focused_button_index >= self.grid_width:
+            if button_index >= self.grid_width:
                 self.focused_button_index -= self.grid_width
         elif event.key in ('down', 's'):
-            if self.focused_button_index < (self.grid_width * (self.grid_height - 1)):
+            if button_index < (self.grid_width * (self.grid_height - 1)):
                 self.focused_button_index += self.grid_width
         elif event.key in ('left', 'a'):
-            if self.focused_button_index % self.grid_width != 0:
+            if button_index % self.grid_width != 0:
                 self.focused_button_index -= 1
         elif event.key in ('right', 'd'):
-            if self.focused_button_index % self.grid_width != self.grid_width - 1:
+            if button_index % self.grid_width != self.grid_width - 1:
                 self.focused_button_index += 1
 
         self.update_focus()
@@ -169,7 +182,8 @@ class MinefieldUI(Grid):
 
             self.update_flag(increment, position)
 
-            if not self.number_of_mine and self.game.validate_flags(self.placed_flags):
+            if not self.number_of_mine and self.game.validate_flags(
+                    self.placed_flags):
                 self.game_over(completed=True)
 
     def update_flag(self, increment: int, position: tuple) -> None:
@@ -250,7 +264,7 @@ class MinefieldLogic:
         self.game_matrix = np.zeros((self.rows, self.cols), dtype=np.uint8)
         self.mask = np.ones((3, 3), dtype=int)
         self.initialize_mines()
-        self.labeled_components: np.ndarray = label(self.game_matrix == 0, structure=self.mask)[0]
+        self.components: np.ndarray = label(self.game_matrix == 0, structure=self.mask)[0]
 
     def initialize_mines(self) -> None:
         matrix = self.game_matrix.copy()
@@ -281,7 +295,7 @@ class MinefieldLogic:
         self.game_matrix = matrix
 
     def get_connected_component(self, position: list | tuple) -> np.ndarray:
-        return np.argwhere(self.labeled_components == self.labeled_components[position])
+        return np.argwhere(self.components == self.components[position])
 
     def validate_flags(self, flags: set) -> bool:
         mine_positions = set(map(tuple, np.argwhere(self.game_matrix >= 9).tolist()))
