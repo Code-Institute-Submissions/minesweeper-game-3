@@ -32,7 +32,7 @@ class Selector(Static, can_focus=True):
             current_index: int = 0,
             value: Optional[str] = None,
             on_change: Optional[Callable] = None,
-            width: int = 30,
+            width: int = 40,
             **kwargs
     ):
         super().__init__(**kwargs)
@@ -199,7 +199,7 @@ class MinefieldUI(Grid):
 
     def uncover_connected_zeros(self) -> None:
         position = self.index_to_position(self.focused_button_index)
-        positions = self.game.get_connected_component_with_frame(position)
+        positions = self.game.get_connected_component(position)
 
         for pos in positions:
             self.set_button(self.position_to_index(pos))
@@ -264,11 +264,18 @@ class MinefieldLogic:
         self.game_matrix = np.zeros((self.rows, self.cols), dtype=np.uint8)
         self.mask = np.ones((3, 3), dtype=int)
         self.initialize_mines()
-        self.components: np.ndarray = label(self.game_matrix == 0, structure=self.mask)[0]
+        self.components: np.ndarray = label(
+            self.game_matrix == 0,
+            structure=self.mask
+        )[0]
 
     def initialize_mines(self) -> None:
         matrix = self.game_matrix.copy()
-        random_mines = np.random.choice(self.game_matrix.size, self.number_of_mines, replace=False)
+        random_mines = np.random.choice(
+            self.game_matrix.size,
+            self.number_of_mines,
+            replace=False
+        )
 
         for mine in random_mines:
             mask = self.mask.copy()
@@ -289,25 +296,25 @@ class MinefieldLogic:
                 mask = mask[:-1, :]
 
             new_matrix = self.game_matrix.copy()
-            new_matrix[pos_y:pos_y + mask.shape[0], pos_x:pos_x + mask.shape[1]] = mask
+            new_matrix[
+                pos_y:pos_y + mask.shape[0],
+                pos_x:pos_x + mask.shape[1]
+            ] = mask
             matrix += new_matrix
 
         self.game_matrix = matrix
 
-    def get_connected_component(self, position: list | tuple) -> np.ndarray:
-        return np.argwhere(self.components == self.components[position])
-
     def validate_flags(self, flags: set) -> bool:
-        mine_positions = set(map(tuple, np.argwhere(self.game_matrix >= 9).tolist()))
-        return not bool(set.difference(mine_positions, flags))
+        positions = map(tuple, np.argwhere(self.game_matrix >= 9).tolist())
+        return not bool(set.difference(set(positions), flags))
 
-    def get_connected_component_with_frame(self, position: list | tuple) -> np.ndarray:
+    def get_connected_component(self, position: list | tuple) -> np.ndarray:
         zeros = np.zeros_like(self.game_matrix, dtype=np.uint8)
-        component = self.get_connected_component(position)
+        component = np.argwhere(self.components == self.components[position])
 
-        for position in component:
-            pos_start = np.clip(position - 1, 0, [self.rows - 1, self.cols - 1])
-            pos_end = np.clip(position + 1, 0, [self.rows - 1, self.cols - 1])
+        for pos in component:
+            pos_start = np.clip(pos - 1, 0, [self.rows - 1, self.cols - 1])
+            pos_end = np.clip(pos + 1, 0, [self.rows - 1, self.cols - 1])
 
             zeros[pos_start[0]:pos_end[0] + 1, pos_start[1]:pos_end[1] + 1] = 1
 
@@ -388,4 +395,5 @@ class ControlsFooter(Horizontal):
 
     def build(self) -> None:
         for key, description in self.bindings.items():
-            self.compose_add_child(Label(f'[bold]{key}:[/bold] {description} [bold]|[/bold] '))
+            self.compose_add_child(
+                Label(f'[bold]{key}:[/bold] {description} [bold]|[/bold] '))
