@@ -469,7 +469,7 @@ class MinesweeperApp(App):
         CSS_PATH (str): Path to the CSS file for styling.
     """
 
-    CSS_PATH = "style.tcss"
+    CSS_PATH = 'style.tcss'
 
     def on_mount(self) -> None:
         """
@@ -482,5 +482,5 @@ class MinesweeperApp(App):
         self.push_screen(MainScreen())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     MinesweeperApp().run()
