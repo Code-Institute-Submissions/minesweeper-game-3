@@ -156,6 +156,7 @@ class MainScreen(Screen):
                 *theme['PRIMARY_ACCENT']
             )
 
+        # Toggle dark mode twice to update color theme
         self.app.dark = not self.app.dark
         self.app.dark = not self.app.dark
 

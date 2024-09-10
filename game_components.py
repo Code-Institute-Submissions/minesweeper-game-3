@@ -79,6 +79,7 @@ class Selector(Static, can_focus=True):
         :return: None
         """
 
+        # If options are available, initialize the display
         if self.options:
             self.update_text()
             self.value = self.options[self.current_index]
@@ -111,6 +112,7 @@ class Selector(Static, can_focus=True):
         :return: None
         """
 
+        # Define the direction based on the increment flag
         direction = 1 if increment else -1
         self.current_index = (
             self.current_index + direction
@@ -138,6 +140,8 @@ class Selector(Static, can_focus=True):
         """
 
         self.value = self.options[self.current_index]
+
+        # If on_change is a function, invoke it with the new value
         if callable(self.on_change):
             self.on_change(self.value)
 
@@ -220,6 +224,7 @@ class MinefieldUI(Grid):
         :return: None
         """
 
+        # Add buttons to the grid with alternating color classes
         for i in range(self.grid_width * self.grid_height):
             color_class = 'primary-bg' if i % 2 else 'secondary-bg'
             self.compose_add_child(
@@ -257,7 +262,7 @@ class MinefieldUI(Grid):
         :return: None
         """
 
-        if value >= 9:
+        if value >= 9:  # Mine detected, game over
             self.game_over(completed=False)
         else:
             self.set_button(self.focused_button_index)
@@ -293,6 +298,7 @@ class MinefieldUI(Grid):
 
         button_index = self.focused_button_index
 
+        # Move focus based on the pressed key
         if event.key in ('up', 'w'):
             if button_index >= self.grid_width:
                 self.focused_button_index -= self.grid_width
@@ -461,7 +467,7 @@ class MinefieldUI(Grid):
         :return: None
         """
 
-        self.uncover_all()
+        self.uncover_all()  # Reveal all cells since the game is over
         self.is_game_over = True
         if callable(self.on_game_over):
             self.on_game_over(completed)
@@ -521,6 +527,8 @@ class MinefieldLogic:
         """
 
         matrix = self.game_matrix.copy()
+
+        # Randomly select positions in the matrix for mine placement
         random_mines = np.random.choice(
             self.game_matrix.size,
             self.number_of_mines,
@@ -534,16 +542,16 @@ class MinefieldLogic:
             pos_y, pos_x = pos_y - 1, pos_x - 1
 
             if pos_x < 0:
-                mask = mask[:, 1:]
+                mask = mask[:, 1:]  # Adjust mask if mine is on the left
                 pos_x = 0
             elif pos_x > self.cols - 3:
-                mask = mask[:, :-1]
+                mask = mask[:, :-1]  # Adjust mask if mine is on the right
 
             if pos_y < 0:
-                mask = mask[1:, :]
+                mask = mask[1:, :]  # Adjust mask if mine is on the top
                 pos_y = 0
             elif pos_y > self.rows - 3:
-                mask = mask[:-1, :]
+                mask = mask[:-1, :]  # Adjust mask if mine is on the bottom
 
             new_matrix = self.game_matrix.copy()
             new_matrix[
@@ -581,9 +589,11 @@ class MinefieldLogic:
         component = np.argwhere(self.components == self.components[position])
 
         for pos in component:
+            # Ensure within bounds
             pos_start = np.clip(pos - 1, 0, [self.rows - 1, self.cols - 1])
             pos_end = np.clip(pos + 1, 0, [self.rows - 1, self.cols - 1])
 
+            # Mark connected area
             zeros[pos_start[0]:pos_end[0] + 1, pos_start[1]:pos_end[1] + 1] = 1
 
         return np.argwhere(zeros)
