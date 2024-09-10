@@ -100,4 +100,3 @@ class Icons(Enum):
     RIGHT = '\u2B9E'
     UP = '\u2B9D'
     DOWN = '\u2B9F'
-
