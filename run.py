@@ -253,6 +253,7 @@ class MainScreen(Screen):
 
         player_name = self.input_field.value.strip()
 
+        # Check if player name is too short
         if len(player_name) < 3:
             self.input_field.value = ''
             self.input_field.placeholder = (
@@ -263,7 +264,15 @@ class MainScreen(Screen):
             self.main_container.children[0].focus()
             return
 
-        self.input_field.value = ''
+        # Validate player name with allowed characters
+        if not all(c.isalpha() or c in ' -' for c in player_name):
+            self.input_field.value = ''
+            self.input_field.placeholder = (
+                'Only use letters, spaces, hyphens'
+            )
+            self.main_container.children[0].focus()
+            return
+
         return player_name.capitalize()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -287,14 +296,15 @@ class MainScreen(Screen):
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         """
-        Moves focus to the next widget when input is submitted.
+        Moves focus to the next widget when player name is valid.
 
         :param event: The input submission event.
         :type event: Input.Submitted
         :return: None
         """
 
-        self.action_next_widget()
+        if self.validate_player_name():
+            self.action_next_widget()
 
 
 class GameScreen(Screen):
