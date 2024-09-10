@@ -64,9 +64,6 @@ GameOverScreen {
     }
 }
 
-
-
-
 MinefieldUI {
     border: inner $background;
 }
@@ -114,3 +111,5 @@ MinefieldUI {
 .block-blue {
     color: dodgerblue;
 }
+
+

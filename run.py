@@ -7,7 +7,12 @@ from textual.screen import Screen
 from textual.widgets import Button, Label, Input, Digits
 from textual.color import Color
 from configurations import Hue, DarkTheme, LightTheme, GameMode, Icons
-from game_components import ControlsFooter, Selector, MinefieldUI, GameOverScreen
+from game_components import (
+    ControlsFooter,
+    Selector,
+    MinefieldUI,
+    GameOverScreen
+)
 
 
 class MainScreen(Screen):
@@ -42,7 +47,7 @@ class MainScreen(Screen):
         )
         input_field.border_title = 'Player'
         input_field.styles.text_style = 'bold'
-        input_field.styles.width = 30
+        input_field.styles.width = 40
         input_field.styles.text_align = 'center'
         return input_field
 
@@ -58,7 +63,15 @@ class MainScreen(Screen):
 
     def create_color_selector(self) -> Selector:
         selector = Selector(
-            options=['Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Red'],
+            options=[
+                'Orange',
+                'Yellow',
+                'Green',
+                'Blue',
+                'Purple',
+                'Pink',
+                'Red'
+            ],
             classes='bordered',
             on_change=lambda x: self.set_color_theme(x)
         )
@@ -84,10 +97,22 @@ class MainScreen(Screen):
         }
 
         for mode, theme in modes.items():
-            self.app.design[mode].primary = Color.from_hsl(hue, *theme['PRIMARY_BACKGROUND'])
-            self.app.design[mode].secondary = Color.from_hsl(hue, *theme['SECONDARY_BACKGROUND'])
-            self.app.design[mode].background = Color.from_hsl(hue, *theme['SECONDARY_ACCENT'])
-            self.app.design[mode].accent = Color.from_hsl(hue, *theme['PRIMARY_ACCENT'])
+            self.app.design[mode].primary = Color.from_hsl(
+                hue,
+                *theme['PRIMARY_BACKGROUND']
+            )
+            self.app.design[mode].secondary = Color.from_hsl(
+                hue,
+                *theme['SECONDARY_BACKGROUND']
+            )
+            self.app.design[mode].background = Color.from_hsl(
+                hue,
+                *theme['SECONDARY_ACCENT']
+            )
+            self.app.design[mode].accent = Color.from_hsl(
+                hue,
+                *theme['PRIMARY_ACCENT']
+            )
 
         self.app.dark = not self.app.dark
         self.app.dark = not self.app.dark
@@ -103,7 +128,7 @@ class MainScreen(Screen):
 
     def create_play_button(self) -> Button:
         button = Button("Play", id="play_button", classes='bordered')
-        button.styles.width = 30
+        button.styles.width = 40
         return button
 
     def compose(self) -> ComposeResult:
@@ -114,23 +139,25 @@ class MainScreen(Screen):
         yield self.main_container
         yield ControlsFooter(
             bindings={
-                f'{Icons.UP.value} {Icons.DOWN.value} / w, s ': 'Move Up & Down',
-                f'{Icons.LEFT.value} {Icons.RIGHT.value} / a, d ': 'Set option',
+                f'{Icons.UP.value} {Icons.DOWN.value} / w, s ': 'Up & Down',
+                f'{Icons.LEFT.value} {Icons.RIGHT.value} / a, d ': 'Switch',
                 'enter': 'Start Game'
             }
         )
 
-    def get_focused_widget(self) -> int:
+    def get_focused_widget(self) -> int | None:
         for index, widget in enumerate(self.main_container.children):
             if widget.has_focus:
                 return index
 
     def action_next_widget(self) -> None:
-        next_widget_index = (self.get_focused_widget() + 1) % len(self.main_container.children)
+        focused = self.get_focused_widget()
+        next_widget_index = (focused + 1) % len(self.main_container.children)
         self.main_container.children[next_widget_index].focus()
 
     def action_previous_widget(self) -> None:
-        next_widget_index = (self.get_focused_widget() - 1) % len(self.main_container.children)
+        focused = self.get_focused_widget()
+        next_widget_index = (focused - 1) % len(self.main_container.children)
         self.main_container.children[next_widget_index].focus()
 
     def validate_player_name(self) -> str | None:
@@ -138,7 +165,11 @@ class MainScreen(Screen):
 
         if len(player_name) < 3:
             self.input_field.value = ''
-            self.input_field.placeholder = 'Use at least 3 letters' if player_name else 'Please enter your name'
+            self.input_field.placeholder = (
+                'Use at least 3 letters'
+                if player_name
+                else 'Please enter your name'
+            )
             self.main_container.children[0].focus()
             return
 
@@ -146,9 +177,15 @@ class MainScreen(Screen):
         return player_name.capitalize()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if (player_name := self.validate_player_name()) and event.button.id == "play_button":
+        player_name = self.validate_player_name()
+        if player_name and event.button.id == "play_button":
             game_mode = self.game_mode_selector.value
-            self.app.push_screen(GameScreen(game_mode=game_mode, player_name=player_name))
+            self.app.push_screen(
+                GameScreen(
+                    game_mode=game_mode,
+                    player_name=player_name
+                )
+            )
 
     def on_input_submitted(self, event: Input.Submitted) -> None:
         self.action_next_widget()
@@ -171,15 +208,21 @@ class GameScreen(Screen):
         self.grid_size = self.game_mode['grid_size']
         self.mine = self.game_mode['mine']
         self.start_time = None
-        self.flag_counter = Digits('00', classes='digits')
-        self.update_flag_counter(self.mine)
-        self.timer = Digits('00:00', classes='digits')
+        self.flag_counter = Digits(
+            value='00',
+            classes='digits'
+        )
+        self.timer = Digits(
+            value='00:00',
+            classes='digits'
+        )
         self.game_board = MinefieldUI(
             grid_size=self.grid_size,
             number_of_mine=self.mine,
             on_game_over=lambda x: self.toggle_game_over_modal(x),
             on_flag=lambda x: self.update_flag_counter(x)
         )
+        self.update_flag_counter(self.mine)
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
@@ -195,7 +238,10 @@ class GameScreen(Screen):
         yield ControlsFooter(
             bindings={
                 'esc/q': 'Quit',
-                f'{Icons.UP.value} {Icons.LEFT.value} {Icons.DOWN.value} {Icons.RIGHT.value} / w, a, s, d ': 'Move',
+                f'{Icons.UP.value} '
+                f'{Icons.LEFT.value} '
+                f'{Icons.DOWN.value} '
+                f'{Icons.RIGHT.value} / w, a, s, d ': 'Move',
                 'enter': 'Hit',
                 'space/f': 'Place flag'
             }
@@ -223,7 +269,11 @@ class GameScreen(Screen):
         self.app.pop_screen()
 
     def toggle_game_over_modal(self, completed):
-        modal = GameOverScreen(player_name=self.player_name, timer=self.timer.value, completed=completed)
+        modal = GameOverScreen(
+            player_name=self.player_name,
+            timer=self.timer.value,
+            completed=completed
+        )
         self.app.push_screen(modal)
 
 
