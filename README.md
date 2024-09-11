@@ -171,10 +171,54 @@ The Game Over Screen serves as the final feedback interface in the Minesweeper g
 ![modal_completed](https://github.com/user-attachments/assets/62c3609c-c676-4235-86b7-a265e36c0f89)
 
 
+## Design
+
+### Imagery
+
+The design of the Minesweeper game focuses on a clean, retro-inspired terminal interface, maintaining simplicity and ease of navigation. There are no elaborate graphics or background images, ensuring that the gameplay itself remains the central focus without distractions.
 
 
+### Color Scheme
+
+The game's color scheme provides both Light and Dark themes, along with seven predefined hue options: Orange, Yellow, Green, Blue, Purple, Pink, and Red. These hues are applied to enhance the visual contrast between different game elements, making the interface customizable while remaining user-friendly.
+
+The themes are designed for clarity, ensuring visibility of important game elements like the minefield, flags, and numbers, making the gameplay intuitive and accessible.
 
 
+### Color Palette
+
+- **Light Mode:**
+
+    - Primary Background: Saturation 50%, Lightness 95%
+    - Secondary Background: Saturation 75%, Lightness 85%
+    - Primary Accent: Saturation 100%, Lightness 45%
+    - Secondary Accent: Saturation 100%, Lightness 25%
+    - Font Color: Saturation 15%, Lightness 15%
+
+- **Dark Mode:**
+
+    - Primary Background: Saturation 16%, Lightness 16%
+    - Secondary Background: Saturation 15%, Lightness 25%
+    - Primary Accent: Saturation 90%, Lightness 60%
+    - Secondary Accent: Saturation 100%, Lightness 80%
+    - Font Color: Saturation 95%, Lightness 95%
+
+- **Hue Values:**
+    The hue values in the game are predefined and listed as follows:
+
+    - Orange: 33°
+    - Yellow: 50°
+    - Green: 110°
+    - Blue: 200°
+    - Purple: 266°
+    - Pink: 320°
+    - Red: 360°
+
+    These predefined hues are designed to suit a variety of personal preferences and maintain visual consistency across different light and dark modes.
+
+- **Accessibility:**
+
+    The color choices aim to maximize readability for users across different lighting conditions, ensuring a comfortable visual experience during gameplay. Additionally, the terminal-based interface ensures the game runs efficiently without unnecessary visual noise, further enhancing accessibility.
 
 
 
