@@ -221,8 +221,66 @@ The themes are designed for clarity, ensuring visibility of important game eleme
     The color choices aim to maximize readability for users across different lighting conditions, ensuring a comfortable visual experience during gameplay. Additionally, the terminal-based interface ensures the game runs efficiently without unnecessary visual noise, further enhancing accessibility.
 
 
+## Installation
 
+While this Minesweeper game is primarily deployed on the web via Heroku and does not require installation for online play, you can set up a local version on Linux and macOS for a better visual experience. Windows support is currently unverified.
 
+### Linux and macOS
+
+**Clone the Repository**
+```Bash
+git clone https://github.com/tibssy/minesweeper-game.git
+cd minesweeper-game/
+```
+
+**Create and Activate a Virtual Environment**
+```Bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**Install Dependencies**
+```Bash
+pip install -r requirements.txt
+```
+
+**Run the Game**
+```Bash
+python run.py
+```
+
+### Creating a Standalone Executable
+
+To create a standalone executable for Linux and macOS, you can use PyInstaller with the provided spec file.
+
+**Install PyInstaller**
+```Bash
+pip install pyinstaller
+```
+
+**Use the Spec File**
+```Bash
+pyinstaller run.spec
+```
+
+**Deactivate the Virtual Environment**
+```Bash
+deactivate
+```
+
+**Locate the Bundled Binary and run**
+```Bash
+cd dist
+chmod +x run
+./run
+```
+
+If the executable is running successfully, you can rename it to whatever you prefer.
+
+### Notes
+
+- Dependencies: Ensure you have Python 3.7 or higher installed.
+- Windows Users: Installation steps for Windows are not currently provided. You may need to adapt the Linux/macOS instructions for your environment or consider using Windows Subsystem for Linux (WSL) if you encounter issues.
 
 
 
