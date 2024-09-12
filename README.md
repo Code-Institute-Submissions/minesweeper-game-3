@@ -348,6 +348,41 @@ The HTML code, including modifications made to the layout.html file, was tested 
 | 09 | Game Screen | The player presses enter on the game board or places a flag | The timer does not start until the player reveals a tile on the game board | PASS |
 | 10 | Game Screen | User presses the space bar or the "f" key on the game board | A flag is placed or removed from the selected cell, and the remaining flag counter at the top left corner is updated accordingly. The flag count remains within the range of the total number of mines (i.e., it cannot go below zero or above the number of mines) | PASS |
 | 11 | Game Screen | User presses enter on a cell where a flag is already placed and there is no mine behind it | The flag is automatically removed, the remaining flag counter at the top left corner is increased, and the cell is uncovered | PASS |
+| 12 | Game Screen | User presses enter on a cell with no mine and no neighboring mines (a zero cell) | The game automatically uncovers all adjacent empty cells and continues to uncover until it reaches cells with numbers or boundaries, including the cells around them | PASS |
+| 13 | Game Screen | User presses enter on a cell with a number (indicating neighboring mines) | The cell with the number is uncovered, and the number of neighboring mines is displayed on the cell | PASS |
+| 14 | Game Screen | User presses Enter on a cell containing a mine | All cells on the game board are uncovered, and the game over modal is displayed, indicating the end of the game | PASS |
+| 15 | Game Screen | User places the last flag | The game automatically starts the validation process. If all flags are in the correct locations, the game over modal is triggered, and the entire game board is uncovered | PASS |
+| 16 | Game Screen | User presses "esc" or "q" during gameplay | The game is reset, and the user is returned to the Main Screen | PASS |
+| 17 | Game Over Screen (Modal) | Game ends with all mines correctly flagged | The modal displays a congratulatory message to the user, indicating that all mines were found successfully | PASS |
+| 18 | Game Over Screen (Modal) | Game ends with a mine triggering | The modal displays an "0ops! You hit a mine and the game is over. Better luck next time!" message indicating that the player triggered a mine | PASS |
+| 19 | Game Over Screen (Modal) | User navigates between "Exit" and "Show" buttons using left/right or "a"/"d" keys | The selection moves between the "Exit" and "Show" buttons, allowing the user to choose one | PASS |
+| 20 | Game Over Screen (Modal) | User selects "Show" and presses enter or "Esc" | The game board is revealed with all numbers and mines uncovered | PASS |
+| 21 | Game Over Screen (Modal) | User selects "Exit" and presses enter | The user is redirected to the main screen with the player name field pre-filled with the user's name, allowing them to start a new game without re-entering their name | PASS |
+
+
+### Operating Systems, Browsers, and Terminals
+
+The application was tested thoroughly on the following operating system, terminals, and browsers. No issues were found:
+
+- **Operating Systems and Kernel**
+
+    - **ArchLinux:** Tested on kernel version 6.10.9-zen1-2-zen
+
+- **Terminals**
+
+    - **gnome-console:** Version 46.0
+    - **xfce4-terminal:** Version 1.1.3
+    - **foot:** Version 1.18.1
+    - **alacritty:** Version 0.13.2
+
+- **Browsers**
+
+    - **Firefox:** Version 130.0
+    - **Brave:** Version 1:1.69.168-1
+
+
+
+
 
 
 
