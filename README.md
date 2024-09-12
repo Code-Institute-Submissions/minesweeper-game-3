@@ -333,6 +333,35 @@ The HTML code, including modifications made to the layout.html file, was tested 
     ![layout_html](https://github.com/user-attachments/assets/106a1b84-0c73-4f16-a2be-b929fa8d5bed)
 
 
+### Functionality Test
+
+| **ID** | **Test Area** | **Test Action** | **Expected Outcome** | **Test Outcome** |
+| ------ | ------------- | --------------- | -------------------- | ---------------- |
+| 01 | Main Screen | User presses up, down, "w", or "s" keys to navigate between options | The selection moves up or down between the available options (Player input, theme, color, difficulty, play) | PASS |
+| 02 | Main Screen | User selects the Player input field, types special characters, and presses enter | Placeholder text changes to "only use letters, spaces, hyphens" | PASS |
+| 03 | Main Screen | User types less than 3 letters in the Player input field and presses enter | Placeholder text changes to "use at least 3 letters" | PASS |
+| 04 | Main Screen | User types between 3 and 10 characters (no special characters) in the Player input field and presses enter | Cursor jumps to the next option (theme selection) | PASS |
+| 05 | Main Screen | User presses left, right, "a", or "d" keys while on the theme option | The theme switches between dark and light modes | PASS |
+| 06 | Main Screen | User presses left, right, "a", or "d" keys while on the color option | Switches between 7 predefined color themes | PASS |
+| 07 | Main Screen | User presses left, right, "a", or "d" keys while on the difficulty option | Switches between Easy, Medium, and Hard difficulty levels | PASS |
+| 08 | Main Screen | User selects the Play button and presses enter | The game starts with the selected settings (theme, color, difficulty) if the player name presented | PASS |
+| 09 | Game Screen | The player presses enter on the game board or places a flag | The timer does not start until the player reveals a tile on the game board | PASS |
+| 10 | Game Screen | User presses the space bar or the "f" key on the game board | A flag is placed or removed from the selected cell, and the remaining flag counter at the top left corner is updated accordingly. The flag count remains within the range of the total number of mines (i.e., it cannot go below zero or above the number of mines) | PASS |
+| 11 | Game Screen | User presses enter on a cell where a flag is already placed and there is no mine behind it | The flag is automatically removed, the remaining flag counter at the top left corner is increased, and the cell is uncovered | PASS |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
