@@ -1,3 +1,25 @@
+"""
+This module defines the core components for the Minesweeper game. It
+includes the `Selector` class for managing option selection, the
+`MinefieldUI` class for displaying the game grid, the `MinefieldLogic`
+class for game logic, and the `GameOverScreen` class for handling game
+over scenarios.
+
+Classes:
+    Selector: A selectable component that allows users to navigate and
+              choose options.
+    MinefieldUI: Manages the display of the Minesweeper grid and user
+                 interactions.
+    MinefieldLogic: Contains the logic for generating the minefield,
+                    handling user input, and game rules.
+    GameOverScreen: Displays the game over screen with results and
+                    options for restarting or exiting.
+
+Usage:
+    Import the required classes from this module to build and manage
+    different aspects of the Minesweeper game.
+"""
+
 from typing import List, Callable, Optional, Tuple
 
 from textual import events
