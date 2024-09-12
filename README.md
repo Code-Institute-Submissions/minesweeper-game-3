@@ -306,6 +306,20 @@ The PEP8 style guide was used to check the code for any formatting errors or iss
     ![configurations](https://github.com/user-attachments/assets/1ad23ab1-e579-4223-8c9c-17f210b76ea0)
 
 
+- **PyLint Validation Result:**
+
+    - **run.py:**
+
+    ![run_pylint](https://github.com/user-attachments/assets/10cd5975-e828-458a-971c-71b14445f797)
+
+    - **game_components.py:**
+
+    ![game_components_pylint](https://github.com/user-attachments/assets/5181996b-af81-41c4-b810-c4ec39667e6b)
+
+    - **configurations.py:**
+
+    ![configurations_pylint](https://github.com/user-attachments/assets/60fba7ad-1c91-428d-959f-74edf4544f33)
+
 
 
 
