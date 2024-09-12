@@ -381,10 +381,27 @@ The application was tested thoroughly on the following operating system, termina
     - **Brave:** Version 1:1.69.168-1
 
 
+## Bugs
+
+- **Issue:** Unable to update the color themes using Textual's built-in update method.
+- **Solution:** To work around this issue, the dark mode was toggled twice using the following code:
+
+    ```
+    self.app.dark = not self.app.dark
+    self.app.dark = not self.app.dark
+    ```
+
+    This approach successfully refreshed the color themes.
 
 
+## Deployment
+
+## Credits
 
 
+### Acknowledgments
+
+- Thank you to my mentor, Brian Macharia, for his continuous support and valuable feedback. His tips and resources have been instrumental in enhancing my coding and testing skills.
 
 
 
