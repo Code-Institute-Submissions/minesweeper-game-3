@@ -1,3 +1,22 @@
+"""
+Minesweeper game application using the Textual framework.
+
+This module defines the main application flow for setting up and playing
+the Minesweeper game, including the main screen, game screen, and event
+handling for user interactions.
+
+Classes:
+    MainScreen: Allows users to select preferences such as name, theme,
+        and difficulty level before starting the game.
+    GameScreen: Manages the game UI and logic, including the game board,
+        timer, and flag counter.
+    MinesweeperApp: The main entry point for the application, responsible
+        for running the game and managing screen transitions.
+
+Attributes:
+    CSS_PATH (str): Path to the CSS file for styling the application.
+"""
+
 import time
 
 from textual import events
@@ -107,7 +126,7 @@ class MainScreen(Screen):
                 'Red'
             ],
             classes='bordered',
-            on_change=lambda x: self.set_color_theme(x)
+            on_change=self.set_color_theme
         )
         selector.current_index = 0
         selector.border_title = 'Color'
@@ -221,6 +240,8 @@ class MainScreen(Screen):
             if widget.has_focus:
                 return index
 
+        return None
+
     def action_next_widget(self) -> None:
         """
         Focuses the next widget in the container.
@@ -262,7 +283,7 @@ class MainScreen(Screen):
                 else 'Please enter your name'
             )
             self.main_container.children[0].focus()
-            return
+            return None
 
         # Validate player name with allowed characters
         if not all(c.isalpha() or c in ' -' for c in player_name):
@@ -271,7 +292,7 @@ class MainScreen(Screen):
                 'Only use letters, spaces, hyphens'
             )
             self.main_container.children[0].focus()
-            return
+            return None
 
         return player_name.capitalize()
 
@@ -303,6 +324,7 @@ class MainScreen(Screen):
         :return: None
         """
 
+        # pylint: disable=W0613
         if self.validate_player_name():
             self.action_next_widget()
 
@@ -354,8 +376,8 @@ class GameScreen(Screen):
         self.game_board = MinefieldUI(
             grid_size=self.grid_size,
             number_of_mine=self.mine,
-            on_game_over=lambda x: self.toggle_game_over_modal(x),
-            on_flag=lambda x: self.update_flag_counter(x)
+            on_game_over=self.toggle_game_over_modal,
+            on_flag=self.update_flag_counter
         )
         self.update_flag_counter(self.mine)
 
