@@ -94,7 +94,9 @@ As a returning visitor to Minesweeper, I want to:
 
     - Color Selector: Allows players to choose from 7 predefined color schemes, offering customization options to suit personal preferences and enhance the visual experience.
 
-    ![7_colors](https://github.com/user-attachments/assets/d2bf2377-1603-44ae-8ace-10a05587bc6b)
+    ![dark_color](https://github.com/user-attachments/assets/2f73c5a3-0464-4be3-b403-e3ebf6eda6e7)
+
+    ![light_color](https://github.com/user-attachments/assets/be765ac8-78ab-438a-8c48-30ced1c68efa)
 
 
 - **Difficulty Levels:**
