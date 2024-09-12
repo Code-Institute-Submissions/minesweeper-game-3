@@ -1,3 +1,31 @@
+"""
+Defines enums for theming and game settings used in Minesweeper.
+
+Enums:
+    Hue: Hues for theming.
+    LightTheme: Colors for the light theme.
+    DarkTheme: Colors for the dark theme.
+    GameMode: Settings for different game modes.
+    Icons: Various game icons.
+
+Hue Enum:
+    ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK, RED
+
+LightTheme Enum:
+    PRIMARY_BACKGROUND, SECONDARY_BACKGROUND, PRIMARY_ACCENT,
+    SECONDARY_ACCENT, FONT_COLOR
+
+DarkTheme Enum:
+    PRIMARY_BACKGROUND, SECONDARY_BACKGROUND, PRIMARY_ACCENT,
+    SECONDARY_ACCENT, FONT_COLOR
+
+GameMode Enum:
+    EASY, MEDIUM, HARD
+
+Icons Enum:
+    MINE, BOMB, SKULL, FLAG, LEFT, RIGHT, UP, DOWN
+"""
+
 from enum import Enum
 
 
