@@ -153,6 +153,8 @@ This feature allows for strategic gameplay by revealing safe areas quickly, redu
 
 ![uncover_zeros_with_border](https://github.com/user-attachments/assets/db73ff20-6872-4fc5-83fb-ada4d0acdedb)
 
+![completed](https://github.com/user-attachments/assets/e32ff3df-455a-42f3-8bc8-5822b73c5356)
+
 
 ### Game Over Screen
 
