@@ -91,7 +91,7 @@ class Icons(Enum):
         UP (str): Icon for up arrow.
         DOWN (str): Icon for down arrow.
     """
-    
+
     MINE = '\u2747'
     BOMB = '\U0001F4A3'
     SKULL = '\u2620'

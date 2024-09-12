@@ -285,6 +285,31 @@ If the executable is running successfully, you can rename it to whatever you pre
 - Windows Users: Installation steps for Windows are not currently provided. You may need to adapt the Linux/macOS instructions for your environment or consider using Windows Subsystem for Linux (WSL) if you encounter issues.
 
 
+## Testing
+
+### PEP8 Code Validation
+
+The PEP8 style guide was used to check the code for any formatting errors or issues. The code was tested using the [PEP8CI tool](https://pep8ci.herokuapp.com/#) tool to ensure it follows Python's best practices.
+
+- **PEP8 Validation Result:**
+
+    - **run.py:**
+
+    ![run](https://github.com/user-attachments/assets/41e046db-774a-4aef-afcb-92918736dc6f)
+
+    - **game_components.py:**
+
+    ![game_components](https://github.com/user-attachments/assets/3f20edf4-00aa-44ed-9957-47c792ca410b)
+
+    - **configurations.py:**
+
+    ![configurations](https://github.com/user-attachments/assets/1ad23ab1-e579-4223-8c9c-17f210b76ea0)
+
+
+
+
+
+
 
 
 
