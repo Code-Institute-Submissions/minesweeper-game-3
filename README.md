@@ -320,7 +320,15 @@ The PEP8 style guide was used to check the code for any formatting errors or iss
 
     ![configurations_pylint](https://github.com/user-attachments/assets/60fba7ad-1c91-428d-959f-74edf4544f33)
 
+### HTML Validation
 
+The HTML code, including modifications made to the layout.html file, was tested using the [W3C Markup Validation Service](https://validator.w3.org/) to ensure it is error-free and follows best practices.
+
+- **HTML Validation Result:**
+
+    - **layout.html:**
+
+    ![layout_html](https://github.com/user-attachments/assets/106a1b84-0c73-4f16-a2be-b929fa8d5bed)
 
 
 
