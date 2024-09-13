@@ -11,6 +11,7 @@ This is a Python implementation of the classic Minesweeper game, built using the
 
 - [User Experience](#user-experience)
 - [Features](#features)
+- [Flow Chart](#flow-chart)
 - [Design](#design)
 - [Installation](#installation)
 - [Testing](#testing)
@@ -177,6 +178,11 @@ The Game Over Screen serves as the final feedback interface in the Minesweeper g
 ![modal_completed](https://github.com/user-attachments/assets/62c3609c-c676-4235-86b7-a265e36c0f89)
 
 
+## Flow Chart
+
+![flowchart](https://github.com/user-attachments/assets/a33c3ee0-5a62-493a-b0e7-cd8db267044b)
+
+
 ## Design
 
 ### Imagery
@@ -324,6 +330,8 @@ The PEP8 style guide was used to check the code for any formatting errors or iss
 
     ![configurations_pylint](https://github.com/user-attachments/assets/60fba7ad-1c91-428d-959f-74edf4544f33)
 
+    The warning about too many instance attributes is due to inheriting from a Textual widget, which has many attributes. This contributes to the total count in my class, but the design remains effective and manageable.
+
 ### HTML Validation
 
 The HTML code, including modifications made to the layout.html file, was tested using the [W3C Markup Validation Service](https://validator.w3.org/) to ensure it is error-free and follows best practices.
@@ -422,6 +430,8 @@ For deployment, this project leverages Heroku's platform, which makes it simple 
     - Enable **Automatic Deploys** for Heroku to update the app with every push to GitHub, or use the **Manual Deploy** option to deploy the main branch manually.
 
 This deployment process ensures your application runs smoothly in a web-based environment hosted on Heroku.
+
+[Minesweeper Game Live Site](https://minesweeper-game-4ed657dc9292.herokuapp.com/)
 
 
 ## Credits
