@@ -180,7 +180,7 @@ The Game Over Screen serves as the final feedback interface in the Minesweeper g
 
 ## Flow Chart
 
-![flowchart](https://github.com/user-attachments/assets/a33c3ee0-5a62-493a-b0e7-cd8db267044b)
+![flowchart](https://github.com/user-attachments/assets/509be553-b824-4e07-91d8-957ae00ac0a6)
 
 
 ## Design
