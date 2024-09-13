@@ -9,14 +9,16 @@ This is a Python implementation of the classic Minesweeper game, built using the
 
 ## Table of Contents
 
--   [User Experience](#user-experience)
--   [Features](#features)
--   [Design](#design)
--   [Installation](#installation)
--   [Testing](#testing)
--   [Bugs](#bugs)
--   [Deployment](#deployment)
--   [Credits](#credits)
+- [User Experience](#user-experience)
+- [Features](#features)
+- [Design](#design)
+- [Installation](#installation)
+- [Testing](#testing)
+- [Bugs](#bugs)
+- [Deployment](#deployment)
+- [Credits](#credits)
+- [Personal Contribution and Experience](#personal-contribution-and-experience)
+- [Acknowledgments](#acknowledgments)
 
 
 ## User Experience
@@ -424,29 +426,29 @@ This deployment process ensures your application runs smoothly in a web-based en
 
 ## Credits
 
-
-### Acknowledgments
-
-- Thank you to my mentor, Brian Macharia, for his continuous support and valuable feedback. His tips and resources have been instrumental in enhancing my coding and testing skills.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **Image Generation**
+    - [Playground AI](https://playground.com) Used for background image and favicon.
+- **Image Editing and Conversion**
+    - [GIMP - GNU Image Manipulation Program](https://www.gimp.org/) Open-source tool for editing images. used for readme images.
+- **Version Control**
+    - [GitHub](https://github.com) Used for version control and repository management.
+- **Integrated Development Environment (IDE)**
+    - Visual Studio Code on Gitpod: [Visual Studio Code](https://code.visualstudio.com/), [GitPod](https://www.gitpod.io/) Online IDE used for coding and development.
+- **Textual**
+    - [Textual](https://textual.textualize.io/) is a Python framework for creating terminal-based user interfaces with rich features.
+- **NumPy**
+    - [NumPy](https://numpy.org/) is a Python library for numerical computing, enabling fast operations on large arrays and matrices
+- **SciPy**
+    - [SciPy](https://scipy.org/) is a Python library that builds on NumPy, providing additional tools for scientific computing, including optimization, integration, interpolation, and linear algebra functions.
 
 
 ## Personal Contribution and Experience
 
-This project was developed entirely by me, without using any external sources, tutorials, or walkthroughs. I didn’t research how to make a Minesweeper game; instead, I used my own logic to solve the problems. I enjoy figuring things out on my own because it keeps the project challenging and fun. All the design and code decisions reflect my own experience and skills, with no outside help.
+This project was developed entirely by me, without relying on external sources, tutorials, or walkthroughs. I didn’t research how to make a Minesweeper game; instead, I used my own logic to solve the problems. I enjoy figuring things out on my own because it keeps the project challenging and fun. All the design and code decisions reflect my own experience and skills, with no outside help.
 
+However, I utilized the documentation for Textual, NumPy, and SciPy to guide my implementation and understand their functionalities better. Additionally, I reviewed the source code of the Textual framework to address specific issues and gain deeper insights into its features. Despite these resources, the overall design and problem-solving approach were entirely my own.
+
+
+## Acknowledgments
+
+Thank you to my mentor, Brian Macharia, for his continuous support and valuable feedback. His tips and resources have been instrumental in enhancing my coding and testing skills.
