@@ -396,6 +396,32 @@ The application was tested thoroughly on the following operating system, termina
 
 ## Deployment
 
+For deployment, this project leverages Heroku's platform, which makes it simple to host and run terminal-based Python applications in the cloud. Here’s a guide for manually deploying your project to Heroku using a GitHub repository:
+
+### Deployment Steps:
+
+- **1. Create a Heroku Account**
+    - Visit [Heroku](https://dashboard.heroku.com/) and sign up for an account.
+
+- **2. Create a New App**
+    - Go to the Heroku dashboard and click **new**.
+    - On the dropdown click **Create new app**.
+    - Provide a unique app name and select your region then click **Create app**.
+
+- **3. Add Buildpacks**
+    - In the **Settings** tab, click **Add buildpack**.
+    - Select **Python** and **Node.js** (if needed), ensuring that Python is listed first.
+
+- **4. Connect to GitHub**
+    - In the **Deploy** tab, choose **GitHub** as the deployment method.
+    - Search for your repository and connect it to Heroku.
+
+- **5. Manual or Automatic Deploy**
+    - Enable **Automatic Deploys** for Heroku to update the app with every push to GitHub, or use the **Manual Deploy** option to deploy the main branch manually.
+
+This deployment process ensures your application runs smoothly in a web-based environment hosted on Heroku.
+
+
 ## Credits
 
 
